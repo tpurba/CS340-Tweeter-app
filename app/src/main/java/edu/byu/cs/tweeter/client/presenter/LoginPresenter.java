@@ -12,7 +12,7 @@ import edu.byu.cs.tweeter.client.view.login.LoginFragment;
 import edu.byu.cs.tweeter.model.domain.AuthToken;
 import edu.byu.cs.tweeter.model.domain.User;
 
-public class LoginPresenter implements UserService.LoginObserver{
+public class LoginPresenter implements UserService.LoginObserver, UserService.GetUserObserver{
 
 
     public interface View{
@@ -75,12 +75,15 @@ public class LoginPresenter implements UserService.LoginObserver{
     public void loginFailed(String message) {
         view.showErrorMessage(message);
     }
-    public void getUserSuccess(User user){
+
+
+    @Override
+    public void getUserSucceeded(User user) {
         view.hideErrorMessage();
         view.hideInfoMessage();
         view.showInfoMessage("Getting user's profile...");
         view.openMainView(user);
-
     }
+
     public void getUserFailed(String message){view.showErrorMessage(message);}
 }

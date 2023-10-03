@@ -49,7 +49,6 @@ public class MainActivityPresenter  {
 
         return statusFormat.format(userFormat.parse(LocalDate.now().toString() + " " + LocalTime.now().toString().substring(0, 8)));
     }
-    //MOVEOUT
     public List<String> parseMentions(String post) {
         List<String> containedMentions = new ArrayList<>();
 
@@ -79,7 +78,6 @@ public class MainActivityPresenter  {
 
         return containedUrls;
     }
-    //MOVEOUT
     public int findUrlEndIndex(String word) {
         if (word.contains(".com")) {
             int index = word.indexOf(".com");
