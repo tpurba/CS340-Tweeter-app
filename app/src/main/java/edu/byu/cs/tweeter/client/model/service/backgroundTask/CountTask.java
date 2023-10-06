@@ -6,14 +6,12 @@ import android.os.Handler;
 import edu.byu.cs.tweeter.model.domain.AuthToken;
 import edu.byu.cs.tweeter.model.domain.User;
 
-public abstract  class CountTask extends BackgroundTask {
+public abstract  class CountTask extends AuthenticatedTask {
     public static final String COUNT_KEY = "count";
-    private AuthToken authToken;
     private User targetUser;
     private int count;
     public CountTask(Handler messageHandler, AuthToken authToken, User targetUser) {
-        super(messageHandler);
-        this.authToken = authToken;
+        super(messageHandler, authToken);
         this.targetUser = targetUser;
     }
     @Override
