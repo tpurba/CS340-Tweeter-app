@@ -1,34 +1,46 @@
 package edu.byu.cs.tweeter.client.model.service.handler;
 
-import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
-
 import androidx.annotation.NonNull;
-
 import edu.byu.cs.tweeter.client.model.service.FollowService;
 import edu.byu.cs.tweeter.client.model.service.backgroundTask.FollowTask;
 
-public class FollowHandler extends Handler {
-    private FollowService.MainActivityObserver observer;
-
+public class FollowHandler extends HanlderTask<FollowService.MainActivityObserver> {
+    FollowService.MainActivityObserver observer;
     public FollowHandler(FollowService.MainActivityObserver observer) {
-        super(Looper.getMainLooper());
+        super(Looper.getMainLooper(), observer);
         this.observer = observer;
     }
-
     @Override
-    public void handleMessage(@NonNull Message msg) {
-        boolean success = msg.getData().getBoolean(FollowTask.SUCCESS_KEY);
-        if (success) {
-            observer.followSuccess(false);
-        } else if (msg.getData().containsKey(FollowTask.MESSAGE_KEY)) {
-            String message = msg.getData().getString(FollowTask.MESSAGE_KEY);
-            observer.followFailed("Failed to follow: " + message);
-        } else if (msg.getData().containsKey(FollowTask.EXCEPTION_KEY)) {
-            Exception ex = (Exception) msg.getData().getSerializable(FollowTask.EXCEPTION_KEY);
-            observer.followFailed("Failed to follow because of exception: " + ex.getMessage());
-        }
+    protected String getSuccessKey() {
+        return FollowTask.SUCCESS_KEY;
+    }
+    @Override
+    protected String getMessageKey() {
+        return FollowTask.MESSAGE_KEY;
+    }
+    @Override
+    protected String getExceptionKey() {
+        return FollowTask.EXCEPTION_KEY;
+    }
+    @Override
+    protected void handleSuccess(Message msg) {
+
+        observer.followSuccess(false);//handle success
+    }
+    @Override
+    protected void handleFailure(Message msg) {
+        String message = msg.getData().getString(FollowTask.MESSAGE_KEY);//handle error
+        observer.followFailed("Failed to follow: " + message);
+    }
+    @Override
+    protected void handleException(Message msg) {
+        Exception ex = (Exception) msg.getData().getSerializable(FollowTask.EXCEPTION_KEY); //handle exception
+        observer.followFailed("Failed to follow because of exception: " + ex.getMessage());
+    }
+    @Override
+    protected void doTask() {
         observer.setFollowButton(true);
     }
 }
