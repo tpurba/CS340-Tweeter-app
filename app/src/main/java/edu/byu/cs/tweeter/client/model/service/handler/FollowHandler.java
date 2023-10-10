@@ -30,17 +30,27 @@ public class FollowHandler extends HanlderTask<FollowService.MainActivityObserve
         observer.followSuccess(false);//handle success
     }
     @Override
-    protected void handleFailure(Message msg) {
+    protected void createFailureMessage(Message msg) {
         String message = msg.getData().getString(FollowTask.MESSAGE_KEY);//handle error
-        observer.followFailed("Failed to follow: " + message);
+        handleFailure(message);//send the failure to be handled
     }
     @Override
-    protected void handleException(Message msg) {
-        Exception ex = (Exception) msg.getData().getSerializable(FollowTask.EXCEPTION_KEY); //handle exception
-        observer.followFailed("Failed to follow because of exception: " + ex.getMessage());
+    protected void createExceptionMessage(Message msg) {
+        Exception ex = (Exception) msg.getData().getSerializable(FollowTask.EXCEPTION_KEY);
+        handleException(ex);//send the exception to be handled
     }
     @Override
     protected void doTask() {
         observer.setFollowButton(true);
+    }
+
+    @Override
+    public void handleFailure(String message) {
+        observer.followFailed("Failed to follow: " + message);
+    }
+
+    @Override
+    public void handleException(Exception exception) {
+        observer.followFailed("Failed to follow because of exception: " + exception.getMessage());
     }
 }

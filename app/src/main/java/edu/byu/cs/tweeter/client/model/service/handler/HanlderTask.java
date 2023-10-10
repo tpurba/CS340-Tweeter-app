@@ -6,9 +6,9 @@ import android.os.Message;
 
 import androidx.annotation.NonNull;
 
-import edu.byu.cs.tweeter.client.model.service.backgroundTask.FollowTask;
+import edu.byu.cs.tweeter.client.model.service.backgroundTask.ServiceObserver;
 
-public abstract class HanlderTask<T> extends Handler {
+public abstract class HanlderTask<T> extends Handler implements ServiceObserver  { //should Handler be extended and not implented? Should I also implement Service Observer?
     private T observer;
     public HanlderTask(Looper looper, T observer) {
         super(looper);
@@ -20,9 +20,9 @@ public abstract class HanlderTask<T> extends Handler {
         if (success) {
             handleSuccess(msg);
         } else if (msg.getData().containsKey(getMessageKey())) {
-            handleFailure(msg);
+            createFailureMessage(msg);
         } else if (msg.getData().containsKey(getExceptionKey())) {
-            handleException(msg);
+            createExceptionMessage(msg);
         }
         doTask();
     }
@@ -31,7 +31,7 @@ public abstract class HanlderTask<T> extends Handler {
     protected abstract String getMessageKey();
     protected abstract String getExceptionKey();
     protected abstract void handleSuccess(Message msg);
-    protected abstract void handleFailure(Message msg);
-    protected abstract void handleException(Message msg);
+    protected abstract void createFailureMessage(Message msg);
+    protected abstract void createExceptionMessage(Message msg);
     protected abstract void doTask();
 }

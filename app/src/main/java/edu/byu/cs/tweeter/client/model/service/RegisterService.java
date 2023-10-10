@@ -14,7 +14,6 @@ public class RegisterService {
         void registerSucceeded(AuthToken authToken, User user);
     }
     public void register(String firstName, String lastName, String alias, String password, String imageBytesBase64, RegisterObserver observer){
-        // Send register request. //CAN TAKE OUT THIS PART
         RegisterTask registerTask = new RegisterTask(firstName, lastName,
                 alias, password, imageBytesBase64, new RegisterHandler(observer));
 
