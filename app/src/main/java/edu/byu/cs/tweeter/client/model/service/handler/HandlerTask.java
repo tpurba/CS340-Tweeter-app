@@ -34,6 +34,11 @@ public abstract class HandlerTask<T> extends Handler implements ServiceObserver 
     protected abstract String getExceptionKey();
     protected abstract void handleSuccess(Message msg);
     protected abstract void createFailureMessage(Message msg);
+    /*
+    Since code is like this for all can we make it in the handler task? Same as the CreateExceptionMessage
+    String message = msg.getData().getString(GetFollowersTask.MESSAGE_KEY);
+        handleFailure(message);
+     */
     protected abstract void createExceptionMessage(Message msg);
     protected abstract void doTask();
 }
