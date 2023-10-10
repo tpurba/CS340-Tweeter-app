@@ -2,11 +2,11 @@ package edu.byu.cs.tweeter.client.model.service.handler;
 
 import android.os.Looper;
 import android.os.Message;
-import androidx.annotation.NonNull;
+
 import edu.byu.cs.tweeter.client.model.service.FollowService;
 import edu.byu.cs.tweeter.client.model.service.backgroundTask.FollowTask;
 
-public class FollowHandler extends HanlderTask<FollowService.MainActivityObserver> {
+public class FollowHandler extends HandlerTask<FollowService.MainActivityObserver> {
     FollowService.MainActivityObserver observer;
     public FollowHandler(FollowService.MainActivityObserver observer) {
         super(Looper.getMainLooper(), observer);
@@ -26,7 +26,6 @@ public class FollowHandler extends HanlderTask<FollowService.MainActivityObserve
     }
     @Override
     protected void handleSuccess(Message msg) {
-
         observer.followSuccess(false);//handle success
     }
     @Override

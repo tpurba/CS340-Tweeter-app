@@ -8,9 +8,9 @@ import androidx.annotation.NonNull;
 
 import edu.byu.cs.tweeter.client.model.service.backgroundTask.ServiceObserver;
 
-public abstract class HanlderTask<T> extends Handler implements ServiceObserver  { //should Handler be extended and not implented? Should I also implement Service Observer?
+public abstract class HandlerTask<T> extends Handler implements ServiceObserver  { //should Handler be extended and not implented? Should I also implement Service Observer?
     private T observer;
-    public HanlderTask(Looper looper, T observer) {
+    public HandlerTask(Looper looper, T observer) {
         super(looper);
         this.observer = observer;//could be redundant so maybe we dont actually touch this???
     }
@@ -19,6 +19,8 @@ public abstract class HanlderTask<T> extends Handler implements ServiceObserver 
         boolean success = msg.getData().getBoolean(getSuccessKey());
         if (success) {
             handleSuccess(msg);
+            //createFailureMessage(msg);
+            //createExceptionMessage(msg);
         } else if (msg.getData().containsKey(getMessageKey())) {
             createFailureMessage(msg);
         } else if (msg.getData().containsKey(getExceptionKey())) {
