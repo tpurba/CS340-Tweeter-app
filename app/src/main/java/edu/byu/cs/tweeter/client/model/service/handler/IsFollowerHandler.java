@@ -9,32 +9,62 @@ import androidx.annotation.NonNull;
 import edu.byu.cs.tweeter.client.model.service.FollowerService;
 import edu.byu.cs.tweeter.client.model.service.backgroundTask.IsFollowerTask;
 
-public class IsFollowerHandler extends Handler {
+public class IsFollowerHandler extends HandlerTask<FollowerService.MainActivityObserver> {
     private FollowerService.MainActivityObserver observer;
 
     public IsFollowerHandler(FollowerService.MainActivityObserver observer) {
-        super(Looper.getMainLooper());
+        super(Looper.getMainLooper(), observer);
         this.observer = observer;
+    }
+    @Override
+    protected String getSuccessKey() {
+        return IsFollowerTask.SUCCESS_KEY;
     }
 
     @Override
-    public void handleMessage(@NonNull Message msg) {
-        boolean success = msg.getData().getBoolean(IsFollowerTask.SUCCESS_KEY);
-        if (success) {
-            boolean isFollower = msg.getData().getBoolean(IsFollowerTask.IS_FOLLOWER_KEY);
+    protected String getMessageKey() {
+        return IsFollowerTask.MESSAGE_KEY;
+    }
 
-            // If logged in user if a follower of the selected user, display the follow button as "following"
-            if (isFollower) {
-                observer.isFollower();
-            } else {
-                observer.notFollower();
-            }
-        } else if (msg.getData().containsKey(IsFollowerTask.MESSAGE_KEY)) {
-            String message = msg.getData().getString(IsFollowerTask.MESSAGE_KEY);
-            observer.isFollowerFailed("Failed to determine following relationship: " + message);
-        } else if (msg.getData().containsKey(IsFollowerTask.EXCEPTION_KEY)) {
-            Exception ex = (Exception) msg.getData().getSerializable(IsFollowerTask.EXCEPTION_KEY);
-            observer.isFollowerFailed("Failed to determine following relationship because of exception: " + ex.getMessage());
+    @Override
+    protected String getExceptionKey() {
+        return IsFollowerTask.EXCEPTION_KEY;
+    }
+
+    @Override
+    protected void handleSuccess(Message msg) {
+        boolean isFollower = msg.getData().getBoolean(IsFollowerTask.IS_FOLLOWER_KEY);
+        if (isFollower) {
+            observer.isFollower();
+        } else {
+            observer.notFollower();
         }
+    }
+
+    @Override
+    protected void createFailureMessage(Message msg) {
+        String message = msg.getData().getString(IsFollowerTask.MESSAGE_KEY);
+        handleFailure(message);
+    }
+
+    @Override
+    protected void createExceptionMessage(Message msg) {
+        Exception ex = (Exception) msg.getData().getSerializable(IsFollowerTask.EXCEPTION_KEY);
+        handleException(ex);
+    }
+
+    @Override
+    protected void doTask() {
+
+    }
+
+    @Override
+    public void handleFailure(String message) {
+        observer.isFollowerFailed("Failed to determine following relationship: " + message);
+    }
+
+    @Override
+    public void handleException(Exception exception) {
+        observer.isFollowerFailed("Failed to determine following relationship because of exception: " + exception.getMessage());
     }
 }
