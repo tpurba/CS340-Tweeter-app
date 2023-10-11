@@ -57,7 +57,7 @@ public class FollowerPresenter
         public void handleFailure(String message) {
             isLoading = false;
             view.setLoadingFooter(false);
-            view.displayMessage(message);
+            view.displayMessage("Failed to get followers: " + message);
         }
 
         @Override

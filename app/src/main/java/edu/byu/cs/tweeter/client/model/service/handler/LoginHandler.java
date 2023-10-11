@@ -51,14 +51,12 @@ public class LoginHandler extends HandlerTask<UserService.LoginObserver> {
     @Override
     protected void createFailureMessage(Message msg) {
         String message = msg.getData().getString(LoginTask.MESSAGE_KEY);
-        //observer.loginFailed(message);
         observer.handleFailure(message);
     }
 
     @Override
     protected void createExceptionMessage(Message msg) {
         Exception ex = (Exception) msg.getData().getSerializable(LoginTask.EXCEPTION_KEY);
-        //observer.loginFailed("Failed to login because of exception: " + exception.getMessage());
         observer.handleException(ex);
     }
 

@@ -59,7 +59,7 @@ public class FeedPresenter {
         public void handleFailure(String message) {
             isLoading = false;
             view.setLoadingFooter(false);
-            view.displayMessage(message);
+            view.displayMessage("Failed to get feed: " + message);
         }
 
         @Override

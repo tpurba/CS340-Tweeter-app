@@ -42,14 +42,12 @@ public class GetFollowersHandler extends HandlerTask<FollowService.FollowerServi
     @Override
     protected void createFailureMessage(Message msg) {
         String message = msg.getData().getString(GetFollowersTask.MESSAGE_KEY);
-        //observer.displayError("Failed to get followers: " + message);
         observer.handleFailure(message);
     }
 
     @Override
     protected void createExceptionMessage(Message msg) {
         Exception ex = (Exception) msg.getData().getSerializable(GetFollowersTask.EXCEPTION_KEY);
-        //observer.displayException(exception);
         observer.handleException(ex);
     }
 

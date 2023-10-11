@@ -10,7 +10,6 @@ public class FollowHandler extends HandlerTask<FollowService.MainActivityObserve
     FollowService.MainActivityObserver observer;
     public FollowHandler(FollowService.MainActivityObserver observer) {
         super(Looper.getMainLooper(), observer);
-        this.observer = observer;
     }
     @Override
     protected String getSuccessKey() {
@@ -30,13 +29,13 @@ public class FollowHandler extends HandlerTask<FollowService.MainActivityObserve
     }
     @Override
     protected void createFailureMessage(Message msg) {
-        String message = msg.getData().getString(FollowTask.MESSAGE_KEY);//handle error
-        observer.handleFailure(message);//send the failure to be handled
+        String message = msg.getData().getString(FollowTask.MESSAGE_KEY);
+        observer.handleFailure(message);
     }
     @Override
     protected void createExceptionMessage(Message msg) {
         Exception ex = (Exception) msg.getData().getSerializable(FollowTask.EXCEPTION_KEY);
-        observer.handleException(ex);//send the exception to be handled
+        observer.handleException(ex);
     }
     @Override
     protected void doTask() {

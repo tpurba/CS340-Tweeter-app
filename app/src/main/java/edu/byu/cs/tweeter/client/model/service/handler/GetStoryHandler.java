@@ -42,14 +42,12 @@ public class GetStoryHandler extends HandlerTask<StatusService.StoryService.Stor
     @Override
     protected void createFailureMessage(Message msg) {
         String message = msg.getData().getString(GetStoryTask.MESSAGE_KEY);
-        // observer.displayError("Failed to get story: " + message);
         observer.handleFailure(message);
     }
 
     @Override
     protected void createExceptionMessage(Message msg) {
         Exception ex = (Exception) msg.getData().getSerializable(GetStoryTask.EXCEPTION_KEY);
-        //observer.displayException(exception);
         observer.handleException(ex);
     }
 

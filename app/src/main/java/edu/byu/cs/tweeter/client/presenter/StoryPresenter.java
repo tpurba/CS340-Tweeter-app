@@ -58,14 +58,14 @@ public class StoryPresenter {
         public void handleFailure(String message) {
             isLoading = false;
             view.setLoadingFooter(false);
-            view.displayMessage(message);
+            view.displayMessage("Failed to get story: " + message);
         }
 
         @Override
         public void handleException(Exception exception) {
             isLoading = false;
             view.setLoadingFooter(false);
-            view.displayMessage("Failed to get story because of exception: " + exception.getMessage());//decide to call display message to show the exception
+            view.displayMessage("Failed to get story because of exception: " + exception.getMessage());
         }
     }
 }

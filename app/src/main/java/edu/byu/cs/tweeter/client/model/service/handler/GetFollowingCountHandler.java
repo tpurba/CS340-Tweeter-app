@@ -7,6 +7,7 @@ import android.os.Message;
 import androidx.annotation.NonNull;
 
 import edu.byu.cs.tweeter.client.model.service.FollowService;
+import edu.byu.cs.tweeter.client.model.service.backgroundTask.CountTask;
 import edu.byu.cs.tweeter.client.model.service.backgroundTask.GetFollowingCountTask;
 
 public class GetFollowingCountHandler extends HandlerTask<FollowService.MainActivityCountServiceObserver> {
@@ -34,21 +35,19 @@ public class GetFollowingCountHandler extends HandlerTask<FollowService.MainActi
 
     @Override
     protected void handleSuccess(Message msg) {
-        int count = msg.getData().getInt(GetFollowingCountTask.COUNT_KEY);
+        int count = msg.getData().getInt(CountTask.COUNT_KEY);
         observer.getFollowingCountSuccess(count);
     }
 
     @Override
     protected void createFailureMessage(Message msg) {
         String message = msg.getData().getString(GetFollowingCountTask.MESSAGE_KEY);
-        // observer.getFollowingCountFailed("Failed to get following count: " + message);
         observer.handleFailure(message);
     }
 
     @Override
     protected void createExceptionMessage(Message msg) {
         Exception ex = (Exception) msg.getData().getSerializable(GetFollowingCountTask.EXCEPTION_KEY);
-        //observer.getFollowingCountFailed("Failed to get following count because of exception: " + exception.getMessage());
         observer.handleException(ex);
     }
 

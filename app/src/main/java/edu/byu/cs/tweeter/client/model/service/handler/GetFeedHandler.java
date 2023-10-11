@@ -41,14 +41,12 @@ public class GetFeedHandler extends HandlerTask<StatusService.FeedService.FeedOb
     @Override
     protected void createFailureMessage(Message msg) {
         String message = msg.getData().getString(GetFeedTask.MESSAGE_KEY);
-        // observer.displayError("Failed to get feed: " + message);
         observer.handleFailure(message);
     }
 
     @Override
     protected void createExceptionMessage(Message msg) {
         Exception ex = (Exception) msg.getData().getSerializable(GetFeedTask.EXCEPTION_KEY);
-        //observer.displayException(exception);
         observer.handleException(ex);
     }
 

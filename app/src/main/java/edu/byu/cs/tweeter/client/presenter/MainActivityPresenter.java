@@ -135,12 +135,12 @@ public class MainActivityPresenter  {
         }
         @Override
         public void handleFailure(String message) {
-            view.showInfoMessage(message);
+            view.showInfoMessage("Failed to logout: " + message);
         }
 
         @Override
         public void handleException(Exception exception) {
-            //implement later
+            view.showInfoMessage("Failed to logout because of exception: " + exception.getMessage());
         }
     }
     private class MainActivityFollowerServiceObserver implements FollowService.FollowerService.MainActivityFollowerObserver, ServiceObserver{
@@ -153,11 +153,11 @@ public class MainActivityPresenter  {
         }
         @Override
         public void handleFailure(String message) {
-            view.showInfoMessage(message);
+            view.showInfoMessage("Failed to determine following relationship: " + message);
         }
         @Override
         public void handleException(Exception exception) {
-            //implement later
+            view.showInfoMessage("Failed to determine following relationship because of exception: " + exception.getMessage());
         }
     }
     private class MainActivityFollowerCountServiceObserver implements FollowService.FollowerService.MainActivityFollowerCountObserver, ServiceObserver{
@@ -167,12 +167,12 @@ public class MainActivityPresenter  {
         }
         @Override
         public void handleFailure(String message) {
-            view.showInfoMessage(message);
+            view.showInfoMessage("Failed to get followers count: " + message);
         }
 
         @Override
         public void handleException(Exception exception) {
-            //implement later
+            view.showInfoMessage("Failed to get followers count because of exception: " + exception.getMessage());
         }
     }
     private class MainActivityFollowServiceObserver implements FollowService.MainActivityObserver{
@@ -189,12 +189,12 @@ public class MainActivityPresenter  {
 
         @Override
         public void handleFailure(String message) {
-            view.showInfoMessage(message);
+            view.showInfoMessage("Failed to follow: " + message);
         }
 
         @Override
         public void handleException(Exception exception) {
-
+            view.showInfoMessage("Failed to follow because of exception: " + exception.getMessage());
         }
     }
     private class MainActivityFollowCountServiceObserver implements FollowService.MainActivityCountServiceObserver, ServiceObserver {
@@ -204,12 +204,12 @@ public class MainActivityPresenter  {
         }
         @Override
         public void handleFailure(String message) {
-            view.showInfoMessage(message);
+            view.showInfoMessage("Failed to get following count: " + message);
         }
 
         @Override
         public void handleException(Exception exception) {
-            //ADD in exception later
+            view.showInfoMessage("Failed to get following count because of exception: " + exception.getMessage());
         }
     }
     private class MainActivityUnFollowServiceObserver implements FollowService.MainActivityUnfollowService, ServiceObserver{
@@ -237,12 +237,12 @@ public class MainActivityPresenter  {
         }
         @Override
         public void handleFailure(String message) {
-            view.showInfoMessage(message);
+            view.showInfoMessage("Failed to post status: " + message);
         }
 
         @Override
         public void handleException(Exception exception) {
-            //implement later
+            view.showInfoMessage("Failed to post status because of exception: " + exception.getMessage());
         }
     }
 }

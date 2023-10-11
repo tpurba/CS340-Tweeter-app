@@ -4,6 +4,8 @@ import android.os.Looper;
 import android.os.Message;
 
 import edu.byu.cs.tweeter.client.model.service.FollowService;
+import edu.byu.cs.tweeter.client.model.service.backgroundTask.BackgroundTask;
+import edu.byu.cs.tweeter.client.model.service.backgroundTask.CountTask;
 import edu.byu.cs.tweeter.client.model.service.backgroundTask.GetFollowersCountTask;
 
 public class GetFollowersCountHandler extends HandlerTask<FollowService.FollowerService.MainActivityFollowerCountObserver> {
@@ -31,21 +33,19 @@ public class GetFollowersCountHandler extends HandlerTask<FollowService.Follower
 
     @Override
     protected void handleSuccess(Message msg) {
-        int count = msg.getData().getInt(GetFollowersCountTask.COUNT_KEY);
+        int count = msg.getData().getInt(CountTask.COUNT_KEY);// Move to super class
         observer.getFollowerCountSuccess(count);
     }
 
     @Override
     protected void createFailureMessage(Message msg) {
-        String message = msg.getData().getString(GetFollowersCountTask.MESSAGE_KEY);
-        // observer.getFollowerCountFailed("Failed to get followers count: " + message);
-        observer.handleFailure(message);
+        String message = msg.getData().getString(BackgroundTask.MESSAGE_KEY);//Can always go to lowest point and get the key
+        observer.handleFailure(message); //Not Log key since it is redefined in each task
     }
 
     @Override
     protected void createExceptionMessage(Message msg) {
         Exception ex = (Exception) msg.getData().getSerializable(GetFollowersCountTask.EXCEPTION_KEY);
-        // observer.getFollowerCountFailed("Failed to get followers count because of exception: " + exception.getMessage());
         observer.handleException(ex);
     }
 

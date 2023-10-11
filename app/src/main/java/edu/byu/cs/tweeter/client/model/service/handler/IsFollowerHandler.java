@@ -41,14 +41,12 @@ public class IsFollowerHandler extends HandlerTask<FollowService.FollowerService
     @Override
     protected void createFailureMessage(Message msg) {
         String message = msg.getData().getString(IsFollowerTask.MESSAGE_KEY);
-        //observer.isFollowerFailed("Failed to determine following relationship: " + message);
         observer.handleFailure(message);
     }
 
     @Override
     protected void createExceptionMessage(Message msg) {
         Exception ex = (Exception) msg.getData().getSerializable(IsFollowerTask.EXCEPTION_KEY);
-        //observer.isFollowerFailed("Failed to determine following relationship because of exception: " + exception.getMessage());
         observer.handleException(ex);
     }
 

@@ -40,14 +40,12 @@ public class LogoutHandler extends HandlerTask<UserService.MainActivityObserver>
     @Override
     protected void createFailureMessage(Message msg) {
         String message = msg.getData().getString(LogoutTask.MESSAGE_KEY);
-        //observer.logOutFailed("Failed to logout: " + message);
         observer.handleFailure(message);
     }
 
     @Override
     protected void createExceptionMessage(Message msg) {
         Exception ex = (Exception) msg.getData().getSerializable(LogoutTask.EXCEPTION_KEY);
-        //observer.logOutFailed("Failed to logout because of exception: " + exception.getMessage());
         observer.handleException(ex);
     }
 

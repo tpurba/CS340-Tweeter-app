@@ -73,12 +73,12 @@ public class LoginPresenter{
 
         @Override
         public void handleFailure(String message) {
-            view.showErrorMessage(message);
+            view.showErrorMessage("Failed to Login: " + message);
         }
 
         @Override
         public void handleException(Exception exception) {
-            //implement later
+            view.showErrorMessage("Failed to login because of exception: " + exception.getMessage());
         }
     }
 
@@ -93,12 +93,12 @@ public class LoginPresenter{
 
         @Override
         public void handleFailure(String message) {
-            view.showErrorMessage(message);
+            view.showErrorMessage("Failed to get user's profile:" + message);
         }
 
         @Override
         public void handleException(Exception exception) {
-            //implement later
+            view.showErrorMessage("Failed to get user's profile because of exception: " + exception.getMessage());
         }
     }
 

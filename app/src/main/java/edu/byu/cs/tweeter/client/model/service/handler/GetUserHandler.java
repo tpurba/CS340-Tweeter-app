@@ -42,14 +42,12 @@ public class GetUserHandler extends HandlerTask<UserService.GetUserObserver> {
     @Override
     protected void createFailureMessage(Message msg) {
         String message = msg.getData().getString(GetUserTask.MESSAGE_KEY);
-        //observer.getUserFailed("Failed to get user's profile:" + message);
         observer.handleFailure(message);
     }
 
     @Override
     protected void createExceptionMessage(Message msg) {
         Exception ex = (Exception) msg.getData().getSerializable(GetUserTask.EXCEPTION_KEY);
-        //observer.getUserFailed("Failed to get user's profile because of exception: " + exception.getMessage());
         observer.handleException(ex);
     }
 
