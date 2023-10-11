@@ -184,7 +184,7 @@ public class MainActivityPresenter  {
 
         @Override
         public void setFollowButton(boolean button) {
-            view.setFollowButton(true);
+            view.setFollowButton(button);
         }
 
         @Override
@@ -217,6 +217,10 @@ public class MainActivityPresenter  {
         public void unFollowSuccess(boolean updateButton) {
             view.updateSelectedUserFollowingAndFollowers();
             view.updateFollowButton(updateButton);
+        }
+        @Override
+        public void setFollowButton(boolean button) {
+            view.setFollowButton(button);
         }
         @Override
         public void handleFailure(String message) {

@@ -45,6 +45,7 @@ public class FollowService {
     public interface MainActivityUnfollowService extends ServiceObserver
     {
         void unFollowSuccess(boolean updateButton);
+        void setFollowButton(boolean button);
         void handleFailure(String message);
         void handleException(Exception exception);
     }

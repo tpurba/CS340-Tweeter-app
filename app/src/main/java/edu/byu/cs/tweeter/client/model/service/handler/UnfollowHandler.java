@@ -34,18 +34,21 @@ public class UnfollowHandler extends HandlerTask<FollowService.MainActivityUnfol
     @Override
     protected void handleSuccess(Message msg) {
         observer.unFollowSuccess(true);
+        observer.setFollowButton(true);
     }
 
     @Override
     protected void createFailureMessage(Message msg) {
         String message = msg.getData().getString(UnfollowTask.MESSAGE_KEY);
         observer.handleFailure(message);
+        observer.setFollowButton(true);
     }
 
     @Override
     protected void createExceptionMessage(Message msg) {
         Exception ex = (Exception) msg.getData().getSerializable(UnfollowTask.EXCEPTION_KEY);
         observer.handleException(ex);
+        observer.setFollowButton(true);
     }
 
     @Override
