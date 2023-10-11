@@ -1,23 +1,11 @@
 package edu.byu.cs.tweeter.client.presenter;
-
-import android.graphics.Bitmap;
-import android.graphics.drawable.BitmapDrawable;
-import android.view.View;
-import android.widget.Toast;
-
-import java.io.ByteArrayOutputStream;
-import java.util.Base64;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-
 import edu.byu.cs.tweeter.client.cache.Cache;
-import edu.byu.cs.tweeter.client.model.service.RegisterService;
-import edu.byu.cs.tweeter.client.model.service.backgroundTask.RegisterTask;
-import edu.byu.cs.tweeter.client.view.login.RegisterFragment;
+import edu.byu.cs.tweeter.client.model.service.ServiceObserver;
+import edu.byu.cs.tweeter.client.model.service.UserService;
 import edu.byu.cs.tweeter.model.domain.AuthToken;
 import edu.byu.cs.tweeter.model.domain.User;
 
-public class RegisterPresenter implements RegisterService.RegisterObserver {
+public class RegisterPresenter {
 
 
     public interface View{
@@ -34,8 +22,8 @@ public class RegisterPresenter implements RegisterService.RegisterObserver {
     {
         view.hideErrorMessage();
         view.showInfoMessage("Registering...");
-        var registerService = new RegisterService();
-        registerService.register(firstName, lastName, alias, password, imageBytesBase64, this);
+        var registerService = new UserService.RegisterService();
+        registerService.register(firstName, lastName, alias, password, imageBytesBase64, new RegisterServiceObserver());
 
 
     }
@@ -61,16 +49,23 @@ public class RegisterPresenter implements RegisterService.RegisterObserver {
         }
     }
 
-    @Override
-    public void registerFailed(String message) {
-        view.showErrorMessage(message);
-    }
 
-    @Override
-    public void registerSucceeded(AuthToken authToken, User registeredUser) {
-        view.hideErrorMessage();
-        view.hideInfoMessage();
-        view.showInfoMessage("Hello " + Cache.getInstance().getCurrUser().getName());
-        view.openMainView(registeredUser);
+    private class RegisterServiceObserver implements UserService.RegisterService.RegisterObserver, ServiceObserver {
+        @Override
+        public void registerSucceeded(AuthToken authToken, User registeredUser) {
+            view.hideErrorMessage();
+            view.hideInfoMessage();
+            view.showInfoMessage("Hello " + Cache.getInstance().getCurrUser().getName());
+            view.openMainView(registeredUser);
+        }
+        @Override
+        public void handleFailure(String message) {
+            view.showErrorMessage("Failed to register: " + message);
+        }
+
+        @Override
+        public void handleException(Exception exception) {
+            view.showErrorMessage("Failed to register because of exception: " + exception.getMessage());
+        }
     }
 }

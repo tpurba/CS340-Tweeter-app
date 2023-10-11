@@ -1,21 +1,18 @@
 package edu.byu.cs.tweeter.client.model.service.handler;
 
-import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
 
-import androidx.annotation.NonNull;
-
 import java.util.List;
 
-import edu.byu.cs.tweeter.client.model.service.FollowerService;
+import edu.byu.cs.tweeter.client.model.service.FollowService;
 import edu.byu.cs.tweeter.client.model.service.backgroundTask.GetFollowersTask;
 import edu.byu.cs.tweeter.model.domain.User;
 
-public class GetFollowersHandler extends HandlerTask<FollowerService.FollowerObserver> {
-    private FollowerService.FollowerObserver observer;
+public class GetFollowersHandler extends HandlerTask<FollowService.FollowerService.FollowerObserver> {
+    private FollowService.FollowerService.FollowerObserver observer;
 
-    public GetFollowersHandler(FollowerService.FollowerObserver observer) {
+    public GetFollowersHandler(FollowService.FollowerService.FollowerObserver observer) {
         super(Looper.getMainLooper(),observer);
         this.observer = observer;
     }
@@ -45,27 +42,19 @@ public class GetFollowersHandler extends HandlerTask<FollowerService.FollowerObs
     @Override
     protected void createFailureMessage(Message msg) {
         String message = msg.getData().getString(GetFollowersTask.MESSAGE_KEY);
-        handleFailure(message);
+        //observer.displayError("Failed to get followers: " + message);
+        observer.handleFailure(message);
     }
 
     @Override
     protected void createExceptionMessage(Message msg) {
         Exception ex = (Exception) msg.getData().getSerializable(GetFollowersTask.EXCEPTION_KEY);
-        handleException(ex);
+        //observer.displayException(exception);
+        observer.handleException(ex);
     }
 
     @Override
     protected void doTask() {
 
-    }
-
-    @Override
-    public void handleFailure(String message) {
-        observer.displayError("Failed to get followers: " + message);
-    }
-
-    @Override
-    public void handleException(Exception exception) {
-        observer.displayException(exception);
     }
 }

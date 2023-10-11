@@ -9,30 +9,13 @@ import androidx.annotation.NonNull;
 import edu.byu.cs.tweeter.client.model.service.FollowService;
 import edu.byu.cs.tweeter.client.model.service.backgroundTask.UnfollowTask;
 
-public class UnfollowHandler extends HandlerTask<FollowService.MainActivityObserver> {
-    private FollowService.MainActivityObserver observer;
+public class UnfollowHandler extends HandlerTask<FollowService.MainActivityUnfollowService> {
+    private FollowService.MainActivityUnfollowService observer;
 
-    public UnfollowHandler(FollowService.MainActivityObserver observer) {
+    public UnfollowHandler(FollowService.MainActivityUnfollowService observer) {
         super(Looper.getMainLooper(), observer);
         this.observer = observer;
     }
-
-    @Override
-    public void handleMessage(@NonNull Message msg) {
-        boolean success = msg.getData().getBoolean(UnfollowTask.SUCCESS_KEY);
-        if (success) {
-            observer.unFollowSuccess(true);
-        } else if (msg.getData().containsKey(UnfollowTask.MESSAGE_KEY)) {
-            String message = msg.getData().getString(UnfollowTask.MESSAGE_KEY);
-            observer.unFollowFailed("Failed to unfollow: " + message);
-        } else if (msg.getData().containsKey(UnfollowTask.EXCEPTION_KEY)) {
-            Exception ex = (Exception) msg.getData().getSerializable(UnfollowTask.EXCEPTION_KEY);
-            observer.unFollowFailed("Failed to unfollow because of exception: " + ex.getMessage());
-        }
-
-        observer.setFollowButton(true);
-    }
-
     @Override
     protected String getSuccessKey() {
         return UnfollowTask.SUCCESS_KEY;
@@ -56,13 +39,13 @@ public class UnfollowHandler extends HandlerTask<FollowService.MainActivityObser
     @Override
     protected void createFailureMessage(Message msg) {
         String message = msg.getData().getString(UnfollowTask.MESSAGE_KEY);
-        handleFailure(message);
+        observer.handleFailure(message);
     }
 
     @Override
     protected void createExceptionMessage(Message msg) {
         Exception ex = (Exception) msg.getData().getSerializable(UnfollowTask.EXCEPTION_KEY);
-        handleException(ex);
+        observer.handleException(ex);
     }
 
     @Override
@@ -70,13 +53,5 @@ public class UnfollowHandler extends HandlerTask<FollowService.MainActivityObser
 
     }
 
-    @Override
-    public void handleFailure(String message) {
-        observer.unFollowFailed("Failed to unfollow: " + message);
-    }
 
-    @Override
-    public void handleException(Exception exception) {
-        observer.unFollowFailed("Failed to unfollow because of exception: " + exception.getMessage());
-    }
 }

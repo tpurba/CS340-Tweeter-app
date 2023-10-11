@@ -4,6 +4,7 @@ import java.util.List;
 
 import edu.byu.cs.tweeter.client.cache.Cache;
 import edu.byu.cs.tweeter.client.model.service.FollowService;
+import edu.byu.cs.tweeter.client.model.service.ServiceObserver;
 import edu.byu.cs.tweeter.client.model.service.backgroundTask.GetFollowingCountTask;
 import edu.byu.cs.tweeter.client.view.main.MainActivity;
 import edu.byu.cs.tweeter.model.domain.User;
@@ -47,22 +48,7 @@ public class FollowingPresenter
         }
 
     }
-    private class FollowServiceObserver implements FollowService.FollowObserver{
-
-        @Override
-        public void displayError(String message) {
-            isLoading = false;
-            view.setLoadingFooter(false);
-            view.displayMessage(message);
-        }
-
-        @Override
-        public void displayException(Exception ex) {//handle exception here
-            isLoading = false;
-            view.setLoadingFooter(false);
-            view.displayMessage("Failed to get following because of exception: " + ex.getMessage());//decide to call display message to show the exception
-        }
-
+    private class FollowServiceObserver implements FollowService.FollowObserver, ServiceObserver {
         @Override
         public void addMoreFollowees(List<User> followees, boolean hasMorePages) {
             isLoading = false;
@@ -70,6 +56,20 @@ public class FollowingPresenter
             FollowingPresenter.this.hasMorePages = hasMorePages;
             lastFollowee = (followees.size() > 0) ? followees.get(followees.size() - 1) : null;
             view.addMoreFollowees(followees);
+        }
+
+        @Override
+        public void handleFailure(String message) {
+            isLoading = false;
+            view.setLoadingFooter(false);
+            view.displayMessage(message);
+        }
+
+        @Override
+        public void handleException(Exception exception) {
+            isLoading = false;
+            view.setLoadingFooter(false);
+            view.displayMessage("Failed to get following because of exception: " + exception.getMessage());//decide to call display message to show the exception
         }
     }
 

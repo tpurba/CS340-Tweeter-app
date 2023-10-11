@@ -1,7 +1,5 @@
 package edu.byu.cs.tweeter.client.presenter;
 
-import android.widget.Toast;
-
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
@@ -9,13 +7,11 @@ import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 
-import edu.byu.cs.tweeter.R;
 import edu.byu.cs.tweeter.client.cache.Cache;
 import edu.byu.cs.tweeter.client.model.service.FollowService;
-import edu.byu.cs.tweeter.client.model.service.FollowerService;
+import edu.byu.cs.tweeter.client.model.service.ServiceObserver;
 import edu.byu.cs.tweeter.client.model.service.StatusService;
 import edu.byu.cs.tweeter.client.model.service.UserService;
-import edu.byu.cs.tweeter.client.view.main.MainActivity;
 import edu.byu.cs.tweeter.model.domain.Status;
 import edu.byu.cs.tweeter.model.domain.User;
 
@@ -23,7 +19,7 @@ public class MainActivityPresenter  {
 
 
     public interface View{
-        void showInfoMessage(String message);
+        void showInfoMessage(String message);//may change this to display message later to match other functions
         void hideInfoMessage();
         void logoutUser();
         void getFollowerCountSuccess(int count);
@@ -42,6 +38,33 @@ public class MainActivityPresenter  {
         view.showInfoMessage("Logging Out...");
         var userService = new UserService();
         userService.logOut(Cache.getInstance().getCurrUserAuthToken(), new MainActivityUserServiceObserver());
+    }
+    public void getFollowerCount(User selectedUser)
+    {
+        var followerService = new FollowService.FollowerService();
+        followerService.getFollowerCount(Cache.getInstance().getCurrUserAuthToken(), selectedUser, new MainActivityFollowerCountServiceObserver());
+    }
+    public void getFollowingCount(User selectedUser){
+        var followService = new FollowService();
+        followService.getFollowingCount(Cache.getInstance().getCurrUserAuthToken(), selectedUser, new MainActivityFollowCountServiceObserver());
+    }
+    public void isFollower(User selectedUser){
+        var followerService = new FollowService.FollowerService();
+        followerService.isFollower(Cache.getInstance().getCurrUserAuthToken(), Cache.getInstance().getCurrUser(), selectedUser, new MainActivityFollowerServiceObserver() );
+    }
+    public void follow(User selectedUser){
+        view.showInfoMessage( "Adding " + selectedUser.getName() + "...");
+        var followService = new FollowService();
+        followService.follow(Cache.getInstance().getCurrUserAuthToken(), selectedUser, new MainActivityFollowServiceObserver());
+    }
+    public void unFollow(User selectedUser){
+        view.showInfoMessage("Removing " + selectedUser.getName() + "...");
+        var followService = new FollowService();
+        followService.unFollow(Cache.getInstance().getCurrUserAuthToken(), selectedUser, new MainActivityUnFollowServiceObserver());
+    }
+    public void postStatus(Status newStatus){
+        var statusService = new StatusService();
+        statusService.postStatus(Cache.getInstance().getCurrUserAuthToken(), newStatus, new MainActivityStatusServiceObserver());
     }
     public String getFormattedDateTime() throws ParseException {
         SimpleDateFormat userFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
@@ -103,85 +126,60 @@ public class MainActivityPresenter  {
             return word.length();
         }
     }
-    public void getFollowerCount(User selectedUser)
-    {
-        var followerService = new FollowerService();
-        followerService.getFollowerCount(Cache.getInstance().getCurrUserAuthToken(), selectedUser, new MainActivityFollowerServiceObserver());
-    }
-    public void getFollowingCount(User selectedUser){
-        var followService = new FollowService();
-        followService.getFollowingCount(Cache.getInstance().getCurrUserAuthToken(), selectedUser, new MainActivityFollowServiceObserver());
-    }
-    public void isFollower(User selectedUser){
-        var followerService = new FollowerService();
-        followerService.isFollower(Cache.getInstance().getCurrUserAuthToken(), Cache.getInstance().getCurrUser(), selectedUser, new MainActivityFollowerServiceObserver() );
-    }
-    public void follow(User selectedUser){
-        view.showInfoMessage( "Adding " + selectedUser.getName() + "...");
-        var followService = new FollowService();
-        followService.follow(Cache.getInstance().getCurrUserAuthToken(), selectedUser, new MainActivityFollowServiceObserver());
-    }
-    public void unFollow(User selectedUser){
-        view.showInfoMessage("Removing " + selectedUser.getName() + "...");
-        var followService = new FollowService();
-        followService.unFollow(Cache.getInstance().getCurrUserAuthToken(), selectedUser, new MainActivityFollowServiceObserver());
-    }
-    public void postStatus(Status newStatus){
-        var statusService = new StatusService();
-        statusService.postStatus(Cache.getInstance().getCurrUserAuthToken(), newStatus, new MainActivityStatusServiceObserver());
-    }
-    private class MainActivityUserServiceObserver implements UserService.MainActivityObserver{
+    private class MainActivityUserServiceObserver implements UserService.MainActivityObserver, ServiceObserver{
 
         @Override
         public void logOutSuccess() {
             view.hideInfoMessage();
             view.logoutUser();
         }
+        @Override
+        public void handleFailure(String message) {
+            view.showInfoMessage(message);
+        }
 
         @Override
-        public void logOutFailed(String message) {
-            view.showInfoMessage(message);
+        public void handleException(Exception exception) {
+            //implement later
         }
     }
-    private class MainActivityFollowerServiceObserver implements FollowerService.MainActivityObserver{
+    private class MainActivityFollowerServiceObserver implements FollowService.FollowerService.MainActivityFollowerObserver, ServiceObserver{
 
-        @Override
-        public void getFollowerCountSuccess(int count) {
-            view.getFollowerCountSuccess(count);
-        }
-        public void getFollowerCountFailed(String message){
-            view.showInfoMessage(message);
-        }
         public void isFollower(){
             view.isFollower();
         }
         public void notFollower(){
             view.notFollower();
         }
-        public void isFollowerFailed(String message){
+        @Override
+        public void handleFailure(String message) {
             view.showInfoMessage(message);
+        }
+        @Override
+        public void handleException(Exception exception) {
+            //implement later
+        }
+    }
+    private class MainActivityFollowerCountServiceObserver implements FollowService.FollowerService.MainActivityFollowerCountObserver, ServiceObserver{
+        @Override
+        public void getFollowerCountSuccess(int count) {
+            view.getFollowerCountSuccess(count);
+        }
+        @Override
+        public void handleFailure(String message) {
+            view.showInfoMessage(message);
+        }
+
+        @Override
+        public void handleException(Exception exception) {
+            //implement later
         }
     }
     private class MainActivityFollowServiceObserver implements FollowService.MainActivityObserver{
-
-        @Override
-        public void getFollowingCountSuccess(int count) {
-            view.getFollowingCountSuccess(count);
-        }
-
-        @Override
-        public void getFollowingCountFailed(String message) {
-            view.showInfoMessage(message);
-        }
         public void followSuccess(boolean updateButton)
         {
             view.updateSelectedUserFollowingAndFollowers();
             view.updateFollowButton(updateButton);
-        }
-
-        @Override
-        public void followFailed(String message) {
-            view.showInfoMessage(message);
         }
 
         @Override
@@ -190,27 +188,61 @@ public class MainActivityPresenter  {
         }
 
         @Override
+        public void handleFailure(String message) {
+            view.showInfoMessage(message);
+        }
+
+        @Override
+        public void handleException(Exception exception) {
+
+        }
+    }
+    private class MainActivityFollowCountServiceObserver implements FollowService.MainActivityCountServiceObserver, ServiceObserver {
+        @Override
+        public void getFollowingCountSuccess(int count) {
+            view.getFollowingCountSuccess(count);
+        }
+        @Override
+        public void handleFailure(String message) {
+            view.showInfoMessage(message);
+        }
+
+        @Override
+        public void handleException(Exception exception) {
+            //ADD in exception later
+        }
+    }
+    private class MainActivityUnFollowServiceObserver implements FollowService.MainActivityUnfollowService, ServiceObserver{
+        @Override
         public void unFollowSuccess(boolean updateButton) {
             view.updateSelectedUserFollowingAndFollowers();
             view.updateFollowButton(updateButton);
         }
+        @Override
+        public void handleFailure(String message) {
+            view.showInfoMessage("Failed to unfollow: " + message);
+        }
 
         @Override
-        public void unFollowFailed(String message) {
-            view.showInfoMessage(message);
+        public void handleException(Exception exception) {
+            view.showInfoMessage("Failed to unfollow because of exception: " + exception.getMessage());
         }
     }
-    public class MainActivityStatusServiceObserver implements StatusService.MainActivityObserver{
+    private class MainActivityStatusServiceObserver implements StatusService.MainActivityObserver, ServiceObserver{
 
         @Override
         public void postSuccess(String message) {
             view.hideInfoMessage();
             view.showInfoMessage(message);
         }
+        @Override
+        public void handleFailure(String message) {
+            view.showInfoMessage(message);
+        }
 
         @Override
-        public void postFailed(String message) {
-            view.showInfoMessage(message);
+        public void handleException(Exception exception) {
+            //implement later
         }
     }
 }

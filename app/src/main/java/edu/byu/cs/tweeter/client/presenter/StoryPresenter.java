@@ -3,7 +3,8 @@ package edu.byu.cs.tweeter.client.presenter;
 import java.util.List;
 
 import edu.byu.cs.tweeter.client.cache.Cache;
-import edu.byu.cs.tweeter.client.model.service.StoryService;
+import edu.byu.cs.tweeter.client.model.service.ServiceObserver;
+import edu.byu.cs.tweeter.client.model.service.StatusService;
 import edu.byu.cs.tweeter.model.domain.Status;
 import edu.byu.cs.tweeter.model.domain.User;
 
@@ -22,10 +23,10 @@ public class StoryPresenter {
 
     }
     private View view;
-    private StoryService storyService;
+    private StatusService.StoryService storyService;
     public StoryPresenter(View view){
         this.view = view;
-        storyService = new StoryService();
+        storyService = new StatusService.StoryService();
     }
 
     public boolean hasMorePages() {
@@ -43,21 +44,7 @@ public class StoryPresenter {
             storyService.loadMoreItems(Cache.getInstance().getCurrUserAuthToken(), user, PAGE_SIZE, lastStatus, new StoryServiceObserver() );
         }
     }
-    private class StoryServiceObserver implements StoryService.StoryObserver{
-        @Override
-        public void displayError(String message) {
-            isLoading = false;
-            view.setLoadingFooter(false);
-            view.displayMessage(message);
-        }
-
-        @Override
-        public void displayException(Exception ex) {
-            isLoading = false;
-            view.setLoadingFooter(false);
-            view.displayMessage("Failed to get story because of exception: " + ex.getMessage());//decide to call display message to show the exception
-
-        }
+    private class StoryServiceObserver implements StatusService.StoryService.StoryObserver, ServiceObserver {
         @Override
         public void addMoreStory(List<Status> statuses, boolean hasMorePages) {
             isLoading = false;
@@ -67,5 +54,18 @@ public class StoryPresenter {
             view.addMoreStory(statuses);
         }
 
+        @Override
+        public void handleFailure(String message) {
+            isLoading = false;
+            view.setLoadingFooter(false);
+            view.displayMessage(message);
+        }
+
+        @Override
+        public void handleException(Exception exception) {
+            isLoading = false;
+            view.setLoadingFooter(false);
+            view.displayMessage("Failed to get story because of exception: " + exception.getMessage());//decide to call display message to show the exception
+        }
     }
 }

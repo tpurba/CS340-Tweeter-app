@@ -1,18 +1,15 @@
 package edu.byu.cs.tweeter.client.model.service.handler;
 
-import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
 
-import androidx.annotation.NonNull;
-
-import edu.byu.cs.tweeter.client.model.service.FollowerService;
+import edu.byu.cs.tweeter.client.model.service.FollowService;
 import edu.byu.cs.tweeter.client.model.service.backgroundTask.IsFollowerTask;
 
-public class IsFollowerHandler extends HandlerTask<FollowerService.MainActivityObserver> {
-    private FollowerService.MainActivityObserver observer;
+public class IsFollowerHandler extends HandlerTask<FollowService.FollowerService.MainActivityFollowerObserver> {
+    private FollowService.FollowerService.MainActivityFollowerObserver observer;
 
-    public IsFollowerHandler(FollowerService.MainActivityObserver observer) {
+    public IsFollowerHandler(FollowService.FollowerService.MainActivityFollowerObserver observer) {
         super(Looper.getMainLooper(), observer);
         this.observer = observer;
     }
@@ -44,27 +41,19 @@ public class IsFollowerHandler extends HandlerTask<FollowerService.MainActivityO
     @Override
     protected void createFailureMessage(Message msg) {
         String message = msg.getData().getString(IsFollowerTask.MESSAGE_KEY);
-        handleFailure(message);
+        //observer.isFollowerFailed("Failed to determine following relationship: " + message);
+        observer.handleFailure(message);
     }
 
     @Override
     protected void createExceptionMessage(Message msg) {
         Exception ex = (Exception) msg.getData().getSerializable(IsFollowerTask.EXCEPTION_KEY);
-        handleException(ex);
+        //observer.isFollowerFailed("Failed to determine following relationship because of exception: " + exception.getMessage());
+        observer.handleException(ex);
     }
 
     @Override
     protected void doTask() {
 
-    }
-
-    @Override
-    public void handleFailure(String message) {
-        observer.isFollowerFailed("Failed to determine following relationship: " + message);
-    }
-
-    @Override
-    public void handleException(Exception exception) {
-        observer.isFollowerFailed("Failed to determine following relationship because of exception: " + exception.getMessage());
     }
 }

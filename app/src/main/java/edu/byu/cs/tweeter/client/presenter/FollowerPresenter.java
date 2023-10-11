@@ -3,7 +3,8 @@ package edu.byu.cs.tweeter.client.presenter;
 import java.util.List;
 
 import edu.byu.cs.tweeter.client.cache.Cache;
-import edu.byu.cs.tweeter.client.model.service.FollowerService;
+import edu.byu.cs.tweeter.client.model.service.FollowService;
+import edu.byu.cs.tweeter.client.model.service.ServiceObserver;
 import edu.byu.cs.tweeter.model.domain.User;
 
 public class FollowerPresenter
@@ -18,10 +19,10 @@ public class FollowerPresenter
         void addMoreFollowers(List<User> followers);
     }
     private View view;
-    private FollowerService followerService;
+    private FollowService.FollowerService followerService;
     public FollowerPresenter(View view){
         this.view = view;
-        followerService = new FollowerService();
+        followerService = new FollowService.FollowerService();
     }
 
     public boolean hasMorePages() {
@@ -41,21 +42,7 @@ public class FollowerPresenter
 
         }
     }
-    private class FollowerServiceObserver implements FollowerService.FollowerObserver{
-
-        @Override
-        public void displayError(String message) {
-            isLoading = false;
-            view.setLoadingFooter(false);
-            view.displayMessage(message);
-        }
-
-        @Override
-        public void displayException(Exception ex) {
-            isLoading = false;
-            view.setLoadingFooter(false);
-            view.displayMessage("Failed to get follower because of exception: " + ex.getMessage());//decide to call display message to show the exception
-        }
+    private class FollowerServiceObserver implements FollowService.FollowerService.FollowerObserver, ServiceObserver {
 
         @Override
         public void addMoreFollowers(List<User> followers, boolean hasMorePages) {
@@ -64,6 +51,20 @@ public class FollowerPresenter
             FollowerPresenter.this.hasMorePages = hasMorePages;
             lastFollower = (followers.size() > 0) ? followers.get(followers.size() - 1) : null;
             view.addMoreFollowers(followers);
+        }
+
+        @Override
+        public void handleFailure(String message) {
+            isLoading = false;
+            view.setLoadingFooter(false);
+            view.displayMessage(message);
+        }
+
+        @Override
+        public void handleException(Exception exception) {
+            isLoading = false;
+            view.setLoadingFooter(false);
+            view.displayMessage("Failed to get follower because of exception: " + exception.getMessage());//decide to call display message to show the exception
         }
     }
 }

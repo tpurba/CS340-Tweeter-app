@@ -1,21 +1,18 @@
 package edu.byu.cs.tweeter.client.model.service.handler;
 
-import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
 
-import androidx.annotation.NonNull;
-
 import java.util.List;
 
-import edu.byu.cs.tweeter.client.model.service.StoryService;
+import edu.byu.cs.tweeter.client.model.service.StatusService;
 import edu.byu.cs.tweeter.client.model.service.backgroundTask.GetStoryTask;
 import edu.byu.cs.tweeter.model.domain.Status;
 
-public class GetStoryHandler extends HandlerTask<StoryService.StoryObserver>{
-    private StoryService.StoryObserver observer;
+public class GetStoryHandler extends HandlerTask<StatusService.StoryService.StoryObserver>{
+    private StatusService.StoryService.StoryObserver observer;
 
-    public GetStoryHandler(StoryService.StoryObserver observer) {
+    public GetStoryHandler(StatusService.StoryService.StoryObserver observer) {
         super(Looper.getMainLooper(), observer);
         this.observer = observer;
     }
@@ -45,13 +42,15 @@ public class GetStoryHandler extends HandlerTask<StoryService.StoryObserver>{
     @Override
     protected void createFailureMessage(Message msg) {
         String message = msg.getData().getString(GetStoryTask.MESSAGE_KEY);
-        handleFailure(message);
+        // observer.displayError("Failed to get story: " + message);
+        observer.handleFailure(message);
     }
 
     @Override
     protected void createExceptionMessage(Message msg) {
         Exception ex = (Exception) msg.getData().getSerializable(GetStoryTask.EXCEPTION_KEY);
-        handleException(ex);
+        //observer.displayException(exception);
+        observer.handleException(ex);
     }
 
     @Override
@@ -59,13 +58,4 @@ public class GetStoryHandler extends HandlerTask<StoryService.StoryObserver>{
 
     }
 
-    @Override
-    public void handleFailure(String message) {
-        observer.displayError("Failed to get story: " + message);
-    }
-
-    @Override
-    public void handleException(Exception exception) {
-        observer.displayException(exception);
-    }
 }

@@ -8,7 +8,7 @@ import androidx.annotation.NonNull;
 
 import edu.byu.cs.tweeter.client.model.service.ServiceObserver;
 
-public abstract class HandlerTask<T> extends Handler implements ServiceObserver  { //should Handler be extended and not implented? Should I also implement Service Observer?
+public abstract class HandlerTask<T extends ServiceObserver> extends Handler   { //should Handler be extended and not implented? Should I also implement Service Observer?
     private T observer;
     public HandlerTask(Looper looper, T observer) {
         super(looper);

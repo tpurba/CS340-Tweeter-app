@@ -42,27 +42,19 @@ public class PostStatusHandler extends HandlerTask<StatusService.MainActivityObs
     @Override
     protected void createFailureMessage(Message msg) {
         String message = msg.getData().getString(PostStatusTask.MESSAGE_KEY);
-        handleFailure(message);
+        //observer.postFailed("Failed to post status: " + message);
+        observer.handleFailure(message);
     }
 
     @Override
     protected void createExceptionMessage(Message msg) {
         Exception ex = (Exception) msg.getData().getSerializable(PostStatusTask.EXCEPTION_KEY);
-        handleException(ex);
+        // observer.postFailed("Failed to post status because of exception: " + exception.getMessage());
+        observer.handleException(ex);
     }
 
     @Override
     protected void doTask() {
 
-    }
-
-    @Override
-    public void handleFailure(String message) {
-        observer.postFailed("Failed to post status: " + message);
-    }
-
-    @Override
-    public void handleException(Exception exception) {
-        observer.postFailed("Failed to post status because of exception: " + exception.getMessage());
     }
 }

@@ -45,13 +45,15 @@ public class GetFollowingHandler extends HandlerTask<FollowService.FollowObserve
     @Override
     protected void createFailureMessage(Message msg) {
         String message = msg.getData().getString(GetFollowingTask.MESSAGE_KEY);
-        handleFailure(message);
+        //observer.displayError("Failed to get following: " + message);
+        observer.handleFailure(message);
     }
 
     @Override
     protected void createExceptionMessage(Message msg) {
         Exception ex = (Exception) msg.getData().getSerializable(GetFollowingTask.EXCEPTION_KEY);
-        handleException(ex);
+        //observer.displayException(exception); //want to keep exceptions in presenter
+        observer.handleException(ex);
     }
 
     @Override
@@ -59,13 +61,4 @@ public class GetFollowingHandler extends HandlerTask<FollowService.FollowObserve
 
     }
 
-    @Override
-    public void handleFailure(String message) {
-        observer.displayError("Failed to get following: " + message);
-    }
-
-    @Override
-    public void handleException(Exception exception) {
-        observer.displayException(exception); //want to keep exceptions in presenter
-    }
 }

@@ -3,7 +3,8 @@ package edu.byu.cs.tweeter.client.presenter;
 import java.util.List;
 
 import edu.byu.cs.tweeter.client.cache.Cache;
-import edu.byu.cs.tweeter.client.model.service.FeedService;
+import edu.byu.cs.tweeter.client.model.service.ServiceObserver;
+import edu.byu.cs.tweeter.client.model.service.StatusService;
 import edu.byu.cs.tweeter.model.domain.Status;
 import edu.byu.cs.tweeter.model.domain.User;
 
@@ -22,11 +23,11 @@ public class FeedPresenter {
         void addMoreFeed(List<Status> statuses);
     }
     private View view;
-    private FeedService feedService;
+    private StatusService.FeedService feedService;
 
     public FeedPresenter(View view){
         this.view = view;
-        feedService = new FeedService();
+        feedService = new StatusService.FeedService();
     }
 
 
@@ -44,21 +45,7 @@ public class FeedPresenter {
             feedService.loadMoreItems(Cache.getInstance().getCurrUserAuthToken(), user, PAGE_SIZE, lastStatus, new FeedServiceObserver());
         }
     }
-    private class FeedServiceObserver implements  FeedService.FeedObserver{
-        @Override
-        public void displayError(String message) {
-            isLoading = false;
-            view.setLoadingFooter(false);
-            view.displayMessage(message);
-        }
-
-        @Override
-        public void displayException(Exception ex) {
-            isLoading = false;
-            view.setLoadingFooter(false);
-            view.displayMessage("Failed to get feed because of exception: " + ex.getMessage());//decide to call display message to show the exception
-
-        }
+    private class FeedServiceObserver implements  StatusService.FeedService.FeedObserver, ServiceObserver {
         @Override
         public void addMoreFeed(List<Status> statuses, boolean hasMorePages) {
             isLoading = false;
@@ -68,7 +55,19 @@ public class FeedPresenter {
             view.addMoreFeed(statuses);
         }
 
+        @Override
+        public void handleFailure(String message) {
+            isLoading = false;
+            view.setLoadingFooter(false);
+            view.displayMessage(message);
+        }
 
+        @Override
+        public void handleException(Exception exception) {
+            isLoading = false;
+            view.setLoadingFooter(false);
+            view.displayMessage("Failed to get feed because of exception: " + exception.getMessage());//decide to call display message to show the exception
+        }
     }
 
 }

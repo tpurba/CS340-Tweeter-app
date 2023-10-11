@@ -1,21 +1,18 @@
 package edu.byu.cs.tweeter.client.model.service.handler;
 
-import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
 
-import androidx.annotation.NonNull;
-
 import edu.byu.cs.tweeter.client.cache.Cache;
-import edu.byu.cs.tweeter.client.model.service.RegisterService;
+import edu.byu.cs.tweeter.client.model.service.UserService;
 import edu.byu.cs.tweeter.client.model.service.backgroundTask.RegisterTask;
 import edu.byu.cs.tweeter.model.domain.AuthToken;
 import edu.byu.cs.tweeter.model.domain.User;
 
-public class RegisterHandler extends HandlerTask<RegisterService.RegisterObserver> {
-    private RegisterService.RegisterObserver observer;
+public class RegisterHandler extends HandlerTask<UserService.RegisterService.RegisterObserver> {
+    private UserService.RegisterService.RegisterObserver observer;
 
-    public RegisterHandler(RegisterService.RegisterObserver observer) {
+    public RegisterHandler(UserService.RegisterService.RegisterObserver observer) {
         super(Looper.getMainLooper(), observer);
         this.observer = observer;
     }
@@ -48,13 +45,13 @@ public class RegisterHandler extends HandlerTask<RegisterService.RegisterObserve
     @Override
     protected void createFailureMessage(Message msg) {
         String message = msg.getData().getString(RegisterTask.MESSAGE_KEY);
-        handleFailure(message);
+        observer.handleFailure(message);
     }
 
     @Override
     protected void createExceptionMessage(Message msg) {
         Exception ex = (Exception) msg.getData().getSerializable(RegisterTask.EXCEPTION_KEY);
-        handleException(ex);
+        observer.handleException(ex);
     }
 
     @Override
@@ -62,13 +59,4 @@ public class RegisterHandler extends HandlerTask<RegisterService.RegisterObserve
 
     }
 
-    @Override
-    public void handleFailure(String message) {
-        observer.registerFailed("Failed to register: " + message);
-    }
-
-    @Override
-    public void handleException(Exception exception) {
-        observer.registerFailed("Failed to register because of exception: " + exception.getMessage());
-    }
 }

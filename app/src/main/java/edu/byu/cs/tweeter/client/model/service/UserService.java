@@ -1,30 +1,37 @@
 package edu.byu.cs.tweeter.client.model.service;
 
+import android.app.Service;
+
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 import edu.byu.cs.tweeter.client.model.service.backgroundTask.GetUserTask;
 import edu.byu.cs.tweeter.client.model.service.backgroundTask.LoginTask;
 import edu.byu.cs.tweeter.client.model.service.backgroundTask.LogoutTask;
+import edu.byu.cs.tweeter.client.model.service.backgroundTask.RegisterTask;
 import edu.byu.cs.tweeter.client.model.service.handler.GetUserHandler;
 import edu.byu.cs.tweeter.client.model.service.handler.LoginHandler;
 import edu.byu.cs.tweeter.client.model.service.handler.LogoutHandler;
+import edu.byu.cs.tweeter.client.model.service.handler.RegisterHandler;
 import edu.byu.cs.tweeter.model.domain.AuthToken;
 import edu.byu.cs.tweeter.model.domain.User;
 
 public class UserService {
-    public interface LoginObserver{
+    public interface LoginObserver extends ServiceObserver{
         void loginSucceeded(AuthToken authToken, User user);
-        void loginFailed(String message);
+        void handleFailure(String message);
+        void handleException(Exception exception);
 
     }
-    public interface GetUserObserver{
+    public interface GetUserObserver extends ServiceObserver {
         void getUserSucceeded(User user);
-        void getUserFailed(String message);
+        void handleFailure(String message);
+        void handleException(Exception exception);
     }
-    public interface MainActivityObserver {
+    public interface MainActivityObserver  extends ServiceObserver{
         void logOutSuccess();
-        void logOutFailed(String message);
+        void handleFailure(String message);
+        void handleException(Exception exception);
     }
 
     public void login(String alias, String password, LoginObserver observer){
@@ -47,8 +54,19 @@ public class UserService {
     }
 
 
+    public static class RegisterService {
+        public interface RegisterObserver extends ServiceObserver {
+                void registerSucceeded(AuthToken authToken, User user);
+                void handleFailure(String message);
+                void handleException(Exception exception);
+            }
+            public void register(String firstName, String lastName, String alias, String password, String imageBytesBase64, RegisterObserver
+            observer){
+                RegisterTask registerTask = new RegisterTask(firstName, lastName,
+                        alias, password, imageBytesBase64, new RegisterHandler(observer));
 
-
-
-
+                ExecutorService executor = Executors.newSingleThreadExecutor();
+                executor.execute(registerTask);
+        }
+    }
 }
