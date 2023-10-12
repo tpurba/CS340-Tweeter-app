@@ -8,7 +8,7 @@ import edu.byu.cs.tweeter.client.model.service.FollowService;
 import edu.byu.cs.tweeter.client.model.service.backgroundTask.GetFollowersTask;
 import edu.byu.cs.tweeter.model.domain.User;
 
-public class GetFollowersFollowHandler extends PageFollowHandler<FollowService.FollowerObserver> {
+public class GetFollowersFollowHandler extends PageHandler<User, FollowService.FollowerObserver> {
 
     public GetFollowersFollowHandler(FollowService.FollowerObserver observer) {
         super(Looper.getMainLooper(),observer);
@@ -29,10 +29,8 @@ public class GetFollowersFollowHandler extends PageFollowHandler<FollowService.F
         return GetFollowersTask.EXCEPTION_KEY;
     }
 
-
     @Override
-    protected void handleAddMoreUser(List<User> userList, boolean hasMorePages) {
-        observer.addMoreFollowers(userList, hasMorePages);
+    protected void callObserver(List<User> list, boolean hasMorePages) {
+        observer.addMoreFollowers(list, hasMorePages);
     }
-
 }

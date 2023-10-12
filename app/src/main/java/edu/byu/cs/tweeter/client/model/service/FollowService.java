@@ -21,7 +21,7 @@ import edu.byu.cs.tweeter.client.model.service.handler.UnfollowHandler;
 import edu.byu.cs.tweeter.model.domain.AuthToken;
 import edu.byu.cs.tweeter.model.domain.User;
 //fetch data
-public class FollowService {
+public class FollowService{
     public interface FollowObserver extends ServiceObserver{
         void addMoreFollowees(List<User> followees, boolean hasMorePages);
         void handleFailure(String message);
@@ -68,6 +68,12 @@ public class FollowService {
         ExecutorService executor = Executors.newSingleThreadExecutor();
         executor.execute(getFollowingTask);
     }
+    public void followerLoadMoreItems(AuthToken currUserAuthToken, User user, int pageSize, User lastFollower, FollowerObserver observer){
+        GetFollowersTask getFollowersTask = new GetFollowersTask(currUserAuthToken,
+                user, pageSize, lastFollower, new GetFollowersFollowHandler(observer));
+        ExecutorService executor = Executors.newSingleThreadExecutor();
+        executor.execute(getFollowersTask);
+    }
     public void getFollowingCount(AuthToken currUserAuthToken, User selectedUser, MainActivityCountServiceObserver observer){
         GetFollowingCountTask followingCountTask = new GetFollowingCountTask(currUserAuthToken,
                 selectedUser, new GetFollowingCountHandler(observer));
@@ -86,12 +92,7 @@ public class FollowService {
         ExecutorService executor = Executors.newSingleThreadExecutor();
         executor.execute(unfollowTask);
     }
-    public void followerLoadMoreItems(AuthToken currUserAuthToken, User user, int pageSize, User lastFollower, FollowerObserver observer){
-        GetFollowersTask getFollowersTask = new GetFollowersTask(currUserAuthToken,
-                user, pageSize, lastFollower, new GetFollowersFollowHandler(observer));
-        ExecutorService executor = Executors.newSingleThreadExecutor();
-        executor.execute(getFollowersTask);
-    }
+
     public void getFollowerCount(AuthToken currUserAuthToken, User selectedUser, MainActivityFollowerCountObserver observer)
     {
         GetFollowersCountTask followersCountTask = new GetFollowersCountTask(currUserAuthToken,

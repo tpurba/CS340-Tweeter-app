@@ -3,16 +3,20 @@ package edu.byu.cs.tweeter.client.presenter;
 import java.util.List;
 
 import edu.byu.cs.tweeter.client.cache.Cache;
+import edu.byu.cs.tweeter.client.model.service.FollowService;
 import edu.byu.cs.tweeter.client.model.service.ServiceObserver;
 import edu.byu.cs.tweeter.client.model.service.StatusService;
+import edu.byu.cs.tweeter.model.domain.AuthToken;
 import edu.byu.cs.tweeter.model.domain.Status;
 import edu.byu.cs.tweeter.model.domain.User;
 
 public class StoryPresenter {
     private static final int PAGE_SIZE = 10;
     private Status lastStatus;
-    private boolean isLoading;
+    private View view;
     private boolean hasMorePages;
+    private boolean isLoading;
+    private StatusService storyService;
     public interface View
     {
         void setLoadingFooter(boolean value);
@@ -22,17 +26,13 @@ public class StoryPresenter {
         void addMoreStory(List<Status> statuses);
 
     }
-    private View view;
-    private StatusService storyService;
     public StoryPresenter(View view){
         this.view = view;
         storyService = new StatusService();
     }
-
     public boolean hasMorePages() {
         return hasMorePages;
     }
-
     public boolean isLoading() {
         return isLoading;
     }
@@ -41,9 +41,10 @@ public class StoryPresenter {
         if (!isLoading) {   // This guard is important for avoiding a race condition in the scrolling code.
             isLoading = true;
             view.setLoadingFooter(true);
-            storyService.storyLoadMoreItems(Cache.getInstance().getCurrUserAuthToken(), user, PAGE_SIZE, lastStatus, new StoryServiceObserver() );
+            storyService.storyLoadMoreItems(Cache.getInstance().getCurrUserAuthToken(), user, PAGE_SIZE, lastStatus, new StoryPresenter.StoryServiceObserver() );
         }
     }
+
     private class StoryServiceObserver implements StatusService.StoryObserver, ServiceObserver {
         @Override
         public void addMoreStory(List<Status> statuses, boolean hasMorePages) {

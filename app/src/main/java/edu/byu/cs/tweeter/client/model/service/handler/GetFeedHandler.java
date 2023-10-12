@@ -8,7 +8,7 @@ import edu.byu.cs.tweeter.client.model.service.StatusService;
 import edu.byu.cs.tweeter.client.model.service.backgroundTask.BackgroundTask;
 import edu.byu.cs.tweeter.model.domain.Status;
 
-public class GetFeedHandler extends StatusHandler<StatusService.FeedObserver> {
+public class GetFeedHandler extends PageHandler<Status, StatusService.FeedObserver> {
 
     public GetFeedHandler(StatusService.FeedObserver observer) {
         super(Looper.getMainLooper(), observer);
@@ -27,10 +27,8 @@ public class GetFeedHandler extends StatusHandler<StatusService.FeedObserver> {
     protected String getExceptionKey() {
         return BackgroundTask.EXCEPTION_KEY;
     }
-
-
     @Override
-    protected void handleAddMoreStatus(List<Status> statuses, boolean hasMorePages) {
-        observer.addMoreFeed(statuses, hasMorePages);
+    protected void callObserver(List<Status> list, boolean hasMorePages) {
+        observer.addMoreFeed(list, hasMorePages);
     }
 }

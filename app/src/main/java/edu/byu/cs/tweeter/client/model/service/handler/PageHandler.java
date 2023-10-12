@@ -8,19 +8,18 @@ import java.util.List;
 import edu.byu.cs.tweeter.client.model.service.ServiceObserver;
 import edu.byu.cs.tweeter.client.model.service.backgroundTask.GetFollowingTask;
 import edu.byu.cs.tweeter.client.model.service.backgroundTask.PageTask;
-import edu.byu.cs.tweeter.model.domain.User;
 
-public abstract class PageFollowHandler<T extends ServiceObserver> extends BackgroundHandler<T> {
-    public PageFollowHandler(Looper looper, T observer) {
+public abstract class PageHandler<O, T extends ServiceObserver>  extends BackgroundHandler<T>  {
+    public PageHandler(Looper looper, T observer) {
         super(looper, observer);
     }
     @Override
     protected void handleSuccess(Message msg) {
-        List<User> userList = (List<User>) msg.getData().getSerializable(PageTask.ITEMS_KEY);
+        List<O> list = (List<O>) msg.getData().getSerializable(PageTask.ITEMS_KEY);
         boolean hasMorePages = msg.getData().getBoolean(PageTask.MORE_PAGES_KEY);
-        handleAddMoreUser(userList, hasMorePages);
+        callObserver(list, hasMorePages);
     }
-    protected abstract void handleAddMoreUser(List<User> userList, boolean hasMorePages );
+    protected abstract void callObserver(List<O> list, boolean hasMorePages);
     @Override
     protected void createFailureMessage(Message msg) {
         String message = msg.getData().getString(GetFollowingTask.MESSAGE_KEY);

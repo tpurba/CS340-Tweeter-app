@@ -10,7 +10,7 @@ import edu.byu.cs.tweeter.client.model.service.backgroundTask.BackgroundTask;
 import edu.byu.cs.tweeter.client.model.service.backgroundTask.PageTask;
 import edu.byu.cs.tweeter.model.domain.Status;
 
-public class GetStoryHandler extends StatusHandler<StatusService.StoryObserver> {
+public class GetStoryHandler extends PageHandler<Status, StatusService.StoryObserver> {
 
     public GetStoryHandler(StatusService.StoryObserver observer) {
         super(Looper.getMainLooper(), observer);
@@ -32,11 +32,7 @@ public class GetStoryHandler extends StatusHandler<StatusService.StoryObserver> 
     }
 
     @Override
-    protected void handleAddMoreStatus(List<Status> statuses, boolean hasMorePages) {
-        observer.addMoreStory(statuses, hasMorePages);
+    protected void callObserver(List<Status> list, boolean hasMorePages) {
+        observer.addMoreStory(list, hasMorePages);
     }
-
-
-
-
 }

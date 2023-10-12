@@ -9,8 +9,8 @@ import edu.byu.cs.tweeter.model.domain.AuthToken;
 import edu.byu.cs.tweeter.model.domain.Status;
 import edu.byu.cs.tweeter.model.domain.User;
 
-public abstract class BackgroundService <T>{
-//    public void loadMoreItems(AuthToken currUserAuthToken, User user, int pageSize, T lastItem, O observer){
+public abstract class BackgroundService <T, O>{
+//    public void loadMoreItems(AuthToken currUserAuthToken, User user, int pageSize, T lastItem, O observer, String TaskType){
 //        GetFeedTask getFeedTask = new GetFeedTask(currUserAuthToken,
 //                user, pageSize, lastItem, new GetFeedHandler(observer));// Create Task
 //        ExecutorService executor = Executors.newSingleThreadExecutor();
