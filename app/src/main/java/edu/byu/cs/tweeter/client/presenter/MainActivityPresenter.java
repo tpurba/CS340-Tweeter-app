@@ -41,7 +41,7 @@ public class MainActivityPresenter  {
     }
     public void getFollowerCount(User selectedUser)
     {
-        var followerService = new FollowService.FollowerService();
+        var followerService = new FollowService();
         followerService.getFollowerCount(Cache.getInstance().getCurrUserAuthToken(), selectedUser, new MainActivityFollowerCountServiceObserver());
     }
     public void getFollowingCount(User selectedUser){
@@ -49,7 +49,7 @@ public class MainActivityPresenter  {
         followService.getFollowingCount(Cache.getInstance().getCurrUserAuthToken(), selectedUser, new MainActivityFollowCountServiceObserver());
     }
     public void isFollower(User selectedUser){
-        var followerService = new FollowService.FollowerService();
+        var followerService = new FollowService();
         followerService.isFollower(Cache.getInstance().getCurrUserAuthToken(), Cache.getInstance().getCurrUser(), selectedUser, new MainActivityFollowerServiceObserver() );
     }
     public void follow(User selectedUser){
@@ -143,7 +143,7 @@ public class MainActivityPresenter  {
             view.showInfoMessage("Failed to logout because of exception: " + exception.getMessage());
         }
     }
-    private class MainActivityFollowerServiceObserver implements FollowService.FollowerService.MainActivityFollowerObserver, ServiceObserver{
+    private class MainActivityFollowerServiceObserver implements FollowService.MainActivityFollowerObserver, ServiceObserver{
 
         public void isFollower(){
             view.isFollower();
@@ -160,7 +160,7 @@ public class MainActivityPresenter  {
             view.showInfoMessage("Failed to determine following relationship because of exception: " + exception.getMessage());
         }
     }
-    private class MainActivityFollowerCountServiceObserver implements FollowService.FollowerService.MainActivityFollowerCountObserver, ServiceObserver{
+    private class MainActivityFollowerCountServiceObserver implements FollowService.MainActivityFollowerCountObserver, ServiceObserver{
         @Override
         public void getFollowerCountSuccess(int count) {
             view.getFollowerCountSuccess(count);

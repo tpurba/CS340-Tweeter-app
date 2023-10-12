@@ -19,10 +19,10 @@ public class FollowerPresenter
         void addMoreFollowers(List<User> followers);
     }
     private View view;
-    private FollowService.FollowerService followerService;
+    private FollowService followerService;
     public FollowerPresenter(View view){
         this.view = view;
-        followerService = new FollowService.FollowerService();
+        followerService = new FollowService();
     }
 
     public boolean hasMorePages() {
@@ -38,11 +38,11 @@ public class FollowerPresenter
         if (!isLoading) {   // This guard is important for avoiding a race condition in the scrolling code.
             isLoading = true;
             view.setLoadingFooter(true);
-            followerService.loadMoreItems(Cache.getInstance().getCurrUserAuthToken(), user, PAGE_SIZE, lastFollower, new FollowerPresenter.FollowerServiceObserver());
+            followerService.followerLoadMoreItems(Cache.getInstance().getCurrUserAuthToken(), user, PAGE_SIZE, lastFollower, new FollowerPresenter.FollowerServiceObserver());
 
         }
     }
-    private class FollowerServiceObserver implements FollowService.FollowerService.FollowerObserver, ServiceObserver {
+    private class FollowerServiceObserver implements FollowService.FollowerObserver, ServiceObserver {
 
         @Override
         public void addMoreFollowers(List<User> followers, boolean hasMorePages) {

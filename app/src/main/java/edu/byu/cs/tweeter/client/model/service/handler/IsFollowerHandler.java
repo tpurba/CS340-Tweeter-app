@@ -6,12 +6,10 @@ import android.os.Message;
 import edu.byu.cs.tweeter.client.model.service.FollowService;
 import edu.byu.cs.tweeter.client.model.service.backgroundTask.IsFollowerTask;
 
-public class IsFollowerHandler extends HandlerTask<FollowService.FollowerService.MainActivityFollowerObserver> {
-    private FollowService.FollowerService.MainActivityFollowerObserver observer;
+public class IsFollowerHandler extends BackgroundHandler<FollowService.MainActivityFollowerObserver> {
 
-    public IsFollowerHandler(FollowService.FollowerService.MainActivityFollowerObserver observer) {
+    public IsFollowerHandler(FollowService.MainActivityFollowerObserver observer) {
         super(Looper.getMainLooper(), observer);
-        this.observer = observer;
     }
     @Override
     protected String getSuccessKey() {
@@ -48,10 +46,5 @@ public class IsFollowerHandler extends HandlerTask<FollowService.FollowerService
     protected void createExceptionMessage(Message msg) {
         Exception ex = (Exception) msg.getData().getSerializable(IsFollowerTask.EXCEPTION_KEY);
         observer.handleException(ex);
-    }
-
-    @Override
-    protected void doTask() {
-
     }
 }

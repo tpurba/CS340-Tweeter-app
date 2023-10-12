@@ -1,60 +1,39 @@
 package edu.byu.cs.tweeter.client.model.service.handler;
 
-import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
 
-import androidx.annotation.NonNull;
-
 import edu.byu.cs.tweeter.client.model.service.FollowService;
-import edu.byu.cs.tweeter.client.model.service.backgroundTask.UnfollowTask;
+import edu.byu.cs.tweeter.client.model.service.backgroundTask.BackgroundTask;
 
-public class UnfollowHandler extends HandlerTask<FollowService.MainActivityUnfollowService> {
-    private FollowService.MainActivityUnfollowService observer;
+public class UnfollowHandler extends FollowButtonHandler<FollowService.MainActivityUnfollowService> {
 
     public UnfollowHandler(FollowService.MainActivityUnfollowService observer) {
         super(Looper.getMainLooper(), observer);
-        this.observer = observer;
     }
     @Override
     protected String getSuccessKey() {
-        return UnfollowTask.SUCCESS_KEY;
+        return BackgroundTask.SUCCESS_KEY;
     }
 
     @Override
     protected String getMessageKey() {
-        return UnfollowTask.MESSAGE_KEY;
+        return BackgroundTask.MESSAGE_KEY;
     }
 
     @Override
     protected String getExceptionKey() {
-        return UnfollowTask.EXCEPTION_KEY;
+        return BackgroundTask.EXCEPTION_KEY;
     }
 
     @Override
-    protected void handleSuccess(Message msg) {
+    protected void handleFollowButton() {
         observer.unFollowSuccess(true);
-        observer.setFollowButton(true);
     }
 
     @Override
-    protected void createFailureMessage(Message msg) {
-        String message = msg.getData().getString(UnfollowTask.MESSAGE_KEY);
-        observer.handleFailure(message);
+    protected void handleEnableButton() {
         observer.setFollowButton(true);
     }
-
-    @Override
-    protected void createExceptionMessage(Message msg) {
-        Exception ex = (Exception) msg.getData().getSerializable(UnfollowTask.EXCEPTION_KEY);
-        observer.handleException(ex);
-        observer.setFollowButton(true);
-    }
-
-    @Override
-    protected void doTask() {
-
-    }
-
 
 }

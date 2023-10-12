@@ -1,20 +1,15 @@
 package edu.byu.cs.tweeter.client.model.service.handler;
 
-import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
-
-import androidx.annotation.NonNull;
 
 import edu.byu.cs.tweeter.client.model.service.UserService;
 import edu.byu.cs.tweeter.client.model.service.backgroundTask.LogoutTask;
 
-public class LogoutHandler extends HandlerTask<UserService.MainActivityObserver> {
-    private UserService.MainActivityObserver observer;
+public class LogoutHandler extends BackgroundHandler<UserService.MainActivityObserver> {
 
     public LogoutHandler(UserService.MainActivityObserver observer) {
         super(Looper.getMainLooper(), observer);
-        this.observer = observer;
     }
 
     @Override
@@ -47,10 +42,5 @@ public class LogoutHandler extends HandlerTask<UserService.MainActivityObserver>
     protected void createExceptionMessage(Message msg) {
         Exception ex = (Exception) msg.getData().getSerializable(LogoutTask.EXCEPTION_KEY);
         observer.handleException(ex);
-    }
-
-    @Override
-    protected void doTask() {
-
     }
 }

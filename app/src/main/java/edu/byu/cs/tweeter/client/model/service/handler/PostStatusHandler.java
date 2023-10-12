@@ -1,22 +1,16 @@
 package edu.byu.cs.tweeter.client.model.service.handler;
 
-import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
-
-import androidx.annotation.NonNull;
 
 import edu.byu.cs.tweeter.client.model.service.StatusService;
 import edu.byu.cs.tweeter.client.model.service.backgroundTask.PostStatusTask;
 
 // PostStatusHandler
 //GETRIDOF
-public class PostStatusHandler extends HandlerTask<StatusService.MainActivityObserver> {
-    private StatusService.MainActivityObserver observer;
-
+public class PostStatusHandler extends BackgroundHandler<StatusService.MainActivityObserver> {
     public PostStatusHandler(StatusService.MainActivityObserver observer) {
         super(Looper.getMainLooper(), observer);
-        this.observer = observer;
     }
 
     @Override
@@ -49,10 +43,5 @@ public class PostStatusHandler extends HandlerTask<StatusService.MainActivityObs
     protected void createExceptionMessage(Message msg) {
         Exception ex = (Exception) msg.getData().getSerializable(PostStatusTask.EXCEPTION_KEY);
         observer.handleException(ex);
-    }
-
-    @Override
-    protected void doTask() {
-
     }
 }

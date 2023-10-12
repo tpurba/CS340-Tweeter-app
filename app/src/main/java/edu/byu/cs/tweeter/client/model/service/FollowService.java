@@ -13,9 +13,9 @@ import edu.byu.cs.tweeter.client.model.service.backgroundTask.IsFollowerTask;
 import edu.byu.cs.tweeter.client.model.service.backgroundTask.UnfollowTask;
 import edu.byu.cs.tweeter.client.model.service.handler.FollowHandler;
 import edu.byu.cs.tweeter.client.model.service.handler.GetFollowersCountHandler;
-import edu.byu.cs.tweeter.client.model.service.handler.GetFollowersHandler;
+import edu.byu.cs.tweeter.client.model.service.handler.GetFollowersFollowHandler;
 import edu.byu.cs.tweeter.client.model.service.handler.GetFollowingCountHandler;
-import edu.byu.cs.tweeter.client.model.service.handler.GetFollowingHandler;
+import edu.byu.cs.tweeter.client.model.service.handler.GetFollowingFollowHandler;
 import edu.byu.cs.tweeter.client.model.service.handler.IsFollowerHandler;
 import edu.byu.cs.tweeter.client.model.service.handler.UnfollowHandler;
 import edu.byu.cs.tweeter.model.domain.AuthToken;
@@ -49,11 +49,25 @@ public class FollowService {
         void handleFailure(String message);
         void handleException(Exception exception);
     }
-    //service can communicate to and from multiple presenters
-    //no accessing cache from service
-    public void loadMoreItems(AuthToken currUserAuthToken, User user, int pageSize, User lastFollowee, FollowObserver observer) {
+    public interface FollowerObserver extends ServiceObserver{
+        void addMoreFollowers(List<User> followers, boolean hasMorePages);
+        void handleFailure(String message);
+        void handleException(Exception exception);
+    }
+    public interface MainActivityFollowerObserver extends ServiceObserver {
+        void isFollower();
+        void notFollower();
+        void handleFailure(String message);
+        void handleException(Exception exception);
+    }
+    public interface MainActivityFollowerCountObserver extends ServiceObserver{
+        void getFollowerCountSuccess(int count);
+        void handleFailure(String message);
+        void handleException(Exception exception);
+    }
+    public void followLoadMoreItems(AuthToken currUserAuthToken, User user, int pageSize, User lastFollowee, FollowObserver observer) {
         GetFollowingTask getFollowingTask = new GetFollowingTask(currUserAuthToken,
-                user, pageSize, lastFollowee, new GetFollowingHandler(observer));
+                user, pageSize, lastFollowee, new GetFollowingFollowHandler(observer));
         ExecutorService executor = Executors.newSingleThreadExecutor();
         executor.execute(getFollowingTask);
     }
@@ -75,44 +89,24 @@ public class FollowService {
         ExecutorService executor = Executors.newSingleThreadExecutor();
         executor.execute(unfollowTask);
     }
-
-    public static class FollowerService {
-
-        public interface FollowerObserver extends ServiceObserver{
-            void addMoreFollowers(List<User> followers, boolean hasMorePages);
-            void handleFailure(String message);
-            void handleException(Exception exception);
-        }
-        public interface MainActivityFollowerObserver extends ServiceObserver {
-            void isFollower();
-            void notFollower();
-            void handleFailure(String message);
-            void handleException(Exception exception);
-        }
-        public interface MainActivityFollowerCountObserver extends ServiceObserver{
-            void getFollowerCountSuccess(int count);
-            void handleFailure(String message);
-            void handleException(Exception exception);
-        }
-        public void loadMoreItems(AuthToken currUserAuthToken, User user, int pageSize, User lastFollower, FollowerObserver observer){
-            GetFollowersTask getFollowersTask = new GetFollowersTask(currUserAuthToken,
-                    user, pageSize, lastFollower, new GetFollowersHandler(observer));
-            ExecutorService executor = Executors.newSingleThreadExecutor();
-            executor.execute(getFollowersTask);
-        }
-        public void getFollowerCount(AuthToken currUserAuthToken, User selectedUser, MainActivityFollowerCountObserver observer)
-        {
-            GetFollowersCountTask followersCountTask = new GetFollowersCountTask(currUserAuthToken,
-                    selectedUser, new GetFollowersCountHandler(observer));
-            ExecutorService executor = Executors.newSingleThreadExecutor();
-            executor.execute(followersCountTask);
-        }
-        public void isFollower(AuthToken currUserAuthToken, User currUser, User selectedUser, MainActivityFollowerObserver observer){
-            IsFollowerTask isFollowerTask = new IsFollowerTask(currUserAuthToken,
-                    currUser, selectedUser, new IsFollowerHandler(observer));
-            ExecutorService executor = Executors.newSingleThreadExecutor();
-            executor.execute(isFollowerTask);
-        }
-
+    public void followerLoadMoreItems(AuthToken currUserAuthToken, User user, int pageSize, User lastFollower, FollowerObserver observer){
+        GetFollowersTask getFollowersTask = new GetFollowersTask(currUserAuthToken,
+                user, pageSize, lastFollower, new GetFollowersFollowHandler(observer));
+        ExecutorService executor = Executors.newSingleThreadExecutor();
+        executor.execute(getFollowersTask);
     }
+    public void getFollowerCount(AuthToken currUserAuthToken, User selectedUser, MainActivityFollowerCountObserver observer)
+    {
+        GetFollowersCountTask followersCountTask = new GetFollowersCountTask(currUserAuthToken,
+                selectedUser, new GetFollowersCountHandler(observer));
+        ExecutorService executor = Executors.newSingleThreadExecutor();
+        executor.execute(followersCountTask);
+    }
+    public void isFollower(AuthToken currUserAuthToken, User currUser, User selectedUser, MainActivityFollowerObserver observer){
+        IsFollowerTask isFollowerTask = new IsFollowerTask(currUserAuthToken,
+                currUser, selectedUser, new IsFollowerHandler(observer));
+        ExecutorService executor = Executors.newSingleThreadExecutor();
+        executor.execute(isFollowerTask);
+    }
+
 }
