@@ -22,7 +22,7 @@ public class RegisterPresenter {
     {
         view.hideErrorMessage();
         view.showInfoMessage("Registering...");
-        var registerService = new UserService.RegisterService();
+        var registerService = new UserService();
         registerService.register(firstName, lastName, alias, password, imageBytesBase64, new RegisterServiceObserver());
 
 
@@ -50,7 +50,7 @@ public class RegisterPresenter {
     }
 
 
-    private class RegisterServiceObserver implements UserService.RegisterService.RegisterObserver, ServiceObserver {
+    private class RegisterServiceObserver implements UserService.RegisterObserver, ServiceObserver {
         @Override
         public void registerSucceeded(AuthToken authToken, User registeredUser) {
             view.hideErrorMessage();

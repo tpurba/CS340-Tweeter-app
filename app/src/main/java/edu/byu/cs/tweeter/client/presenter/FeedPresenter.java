@@ -23,11 +23,11 @@ public class FeedPresenter {
         void addMoreFeed(List<Status> statuses);
     }
     private View view;
-    private StatusService.FeedService feedService;
+    private StatusService feedService;
 
     public FeedPresenter(View view){
         this.view = view;
-        feedService = new StatusService.FeedService();
+        feedService = new StatusService();
     }
 
 
@@ -42,10 +42,10 @@ public class FeedPresenter {
         if (!isLoading) {
             isLoading = true;
             view.setLoadingFooter(true);
-            feedService.loadMoreItems(Cache.getInstance().getCurrUserAuthToken(), user, PAGE_SIZE, lastStatus, new FeedServiceObserver());
+            feedService.feedLoadMoreItems(Cache.getInstance().getCurrUserAuthToken(), user, PAGE_SIZE, lastStatus, new FeedServiceObserver());
         }
     }
-    private class FeedServiceObserver implements  StatusService.FeedService.FeedObserver, ServiceObserver {
+    private class FeedServiceObserver implements  StatusService.FeedObserver, ServiceObserver {
         @Override
         public void addMoreFeed(List<Status> statuses, boolean hasMorePages) {
             isLoading = false;

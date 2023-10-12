@@ -11,9 +11,9 @@ import edu.byu.cs.tweeter.client.model.service.backgroundTask.RegisterTask;
 import edu.byu.cs.tweeter.model.domain.AuthToken;
 import edu.byu.cs.tweeter.model.domain.User;
 
-public class RegisterHandler extends AuthenticateHandler<UserService.RegisterService.RegisterObserver> {
+public class RegisterHandler extends AuthenticateHandler<UserService.RegisterObserver> {
 
-    public RegisterHandler(UserService.RegisterService.RegisterObserver observer) {
+    public RegisterHandler(UserService.RegisterObserver observer) {
         super(Looper.getMainLooper(), observer);
     }
 

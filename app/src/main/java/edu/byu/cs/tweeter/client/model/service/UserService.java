@@ -33,6 +33,11 @@ public class UserService {
         void handleFailure(String message);
         void handleException(Exception exception);
     }
+    public interface RegisterObserver extends ServiceObserver {
+        void registerSucceeded(AuthToken authToken, User user);
+        void handleFailure(String message);
+        void handleException(Exception exception);
+    }
 
     public void login(String alias, String password, LoginObserver observer){
         // Send the login request.
@@ -53,20 +58,13 @@ public class UserService {
         executor.execute(logoutTask);
     }
 
+    public void register(String firstName, String lastName, String alias, String password, String imageBytesBase64, RegisterObserver
+    observer){
+        RegisterTask registerTask = new RegisterTask(firstName, lastName,
+                alias, password, imageBytesBase64, new RegisterHandler(observer));
 
-    public static class RegisterService {
-        public interface RegisterObserver extends ServiceObserver {
-                void registerSucceeded(AuthToken authToken, User user);
-                void handleFailure(String message);
-                void handleException(Exception exception);
-            }
-            public void register(String firstName, String lastName, String alias, String password, String imageBytesBase64, RegisterObserver
-            observer){
-                RegisterTask registerTask = new RegisterTask(firstName, lastName,
-                        alias, password, imageBytesBase64, new RegisterHandler(observer));
-
-                ExecutorService executor = Executors.newSingleThreadExecutor();
-                executor.execute(registerTask);
-        }
+        ExecutorService executor = Executors.newSingleThreadExecutor();
+        executor.execute(registerTask);
     }
+
 }

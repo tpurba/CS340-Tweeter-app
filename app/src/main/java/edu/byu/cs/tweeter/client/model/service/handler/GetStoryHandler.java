@@ -10,9 +10,9 @@ import edu.byu.cs.tweeter.client.model.service.backgroundTask.BackgroundTask;
 import edu.byu.cs.tweeter.client.model.service.backgroundTask.PageTask;
 import edu.byu.cs.tweeter.model.domain.Status;
 
-public class GetStoryHandler extends StatusHandler<StatusService.StoryService.StoryObserver> {
+public class GetStoryHandler extends StatusHandler<StatusService.StoryObserver> {
 
-    public GetStoryHandler(StatusService.StoryService.StoryObserver observer) {
+    public GetStoryHandler(StatusService.StoryObserver observer) {
         super(Looper.getMainLooper(), observer);
     }
 

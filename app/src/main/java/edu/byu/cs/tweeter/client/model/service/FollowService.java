@@ -33,14 +33,11 @@ public class FollowService {
         void setFollowButton(boolean button);
         void handleFailure(String message);
         void handleException(Exception exception);
-
-
     }
     public interface MainActivityCountServiceObserver extends ServiceObserver {
         void getFollowingCountSuccess(int count);
         void handleFailure(String message);
         void handleException(Exception exception);
-
     }
     public interface MainActivityUnfollowService extends ServiceObserver
     {

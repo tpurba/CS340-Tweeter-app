@@ -23,10 +23,10 @@ public class StoryPresenter {
 
     }
     private View view;
-    private StatusService.StoryService storyService;
+    private StatusService storyService;
     public StoryPresenter(View view){
         this.view = view;
-        storyService = new StatusService.StoryService();
+        storyService = new StatusService();
     }
 
     public boolean hasMorePages() {
@@ -41,10 +41,10 @@ public class StoryPresenter {
         if (!isLoading) {   // This guard is important for avoiding a race condition in the scrolling code.
             isLoading = true;
             view.setLoadingFooter(true);
-            storyService.loadMoreItems(Cache.getInstance().getCurrUserAuthToken(), user, PAGE_SIZE, lastStatus, new StoryServiceObserver() );
+            storyService.storyLoadMoreItems(Cache.getInstance().getCurrUserAuthToken(), user, PAGE_SIZE, lastStatus, new StoryServiceObserver() );
         }
     }
-    private class StoryServiceObserver implements StatusService.StoryService.StoryObserver, ServiceObserver {
+    private class StoryServiceObserver implements StatusService.StoryObserver, ServiceObserver {
         @Override
         public void addMoreStory(List<Status> statuses, boolean hasMorePages) {
             isLoading = false;

@@ -8,9 +8,9 @@ import edu.byu.cs.tweeter.client.model.service.StatusService;
 import edu.byu.cs.tweeter.client.model.service.backgroundTask.BackgroundTask;
 import edu.byu.cs.tweeter.model.domain.Status;
 
-public class GetFeedHandler extends StatusHandler<StatusService.FeedService.FeedObserver> {
+public class GetFeedHandler extends StatusHandler<StatusService.FeedObserver> {
 
-    public GetFeedHandler(StatusService.FeedService.FeedObserver observer) {
+    public GetFeedHandler(StatusService.FeedObserver observer) {
         super(Looper.getMainLooper(), observer);
     }
     @Override
