@@ -111,25 +111,9 @@ public class FollowersFragment extends Fragment implements LoginPresenter.View, 
     }
 
     @Override
-    public void addMoreFollowees(List<User> followees) {
-        //delete and fix
+    public void addMoreItems(List items) {
+        followersRecyclerViewAdapter.addItems(items);
     }
-
-    @Override
-    public void addMoreFollowers(List<User> followers) {
-        followersRecyclerViewAdapter.addItems(followers);
-    }
-
-    @Override
-    public void addMoreFeed(List<Status> statuses) {
-//delete and fix
-    }
-
-    @Override
-    public void addMoreStory(List<Status> statuses) {
-//delete and fix
-    }
-
     @Override
     public void showInfoMessage(String message) {
         followerToast = Toast.makeText(getContext(), message, Toast.LENGTH_LONG);

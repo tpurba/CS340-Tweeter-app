@@ -5,10 +5,11 @@ import java.util.List;
 import edu.byu.cs.tweeter.client.cache.Cache;
 import edu.byu.cs.tweeter.client.model.service.FollowService;
 import edu.byu.cs.tweeter.client.model.service.ServiceObserver;
+import edu.byu.cs.tweeter.client.view.main.followers.FollowersFragment;
 import edu.byu.cs.tweeter.model.domain.AuthToken;
 import edu.byu.cs.tweeter.model.domain.User;
 
-public class FollowerPresenter extends PagedPresenter<User>
+public class FollowerPresenter extends PagedPresenter<User, FollowerPresenter.View>
 {
     private FollowService followerService;
     public FollowerPresenter(View view){
@@ -29,20 +30,10 @@ public class FollowerPresenter extends PagedPresenter<User>
     }
     @Override
     public void doService(AuthToken currUserAuthToken, User user, int pageSize, User lastItem) {
-        followerService.followerLoadMoreItems(Cache.getInstance().getCurrUserAuthToken(), user, PAGE_SIZE, this.lastItem, new FollowerPresenter.FollowerServiceObserver());
+        followerService.followerLoadMoreItems(Cache.getInstance().getCurrUserAuthToken(), user, PAGE_SIZE, this.lastItem, new PageUserServiceObserver());
     }
 
-    private class FollowerServiceObserver implements FollowService.userPageObserver, ServiceObserver {
-
-        @Override
-        public void addMoreUsers(List<User> followers, boolean hasMorePages) {
-            isLoading = false;
-            view.setLoadingFooter(false);
-            FollowerPresenter.this.hasMorePages = hasMorePages;
-            lastItem = (followers.size() > 0) ? followers.get(followers.size() - 1) : null;
-            view.addMoreFollowers(followers);
-        }
-
+    public class PageUserServiceObserver extends PagedObserver{
         @Override
         public void handleFailure(String message) {
             isLoading = false;

@@ -5,27 +5,18 @@ import edu.byu.cs.tweeter.client.model.service.UserService;
 import edu.byu.cs.tweeter.model.domain.AuthToken;
 import edu.byu.cs.tweeter.model.domain.User;
 
-public class RegisterPresenter {
+public class RegisterPresenter extends AuthPresenter<AuthPresenter.View> {
 
-
-    public interface View{
-        void showInfoMessage(String message);
-        void hideInfoMessage();
-        void showErrorMessage(String message);
-        void hideErrorMessage();
-        void openMainView(User user);
+    public RegisterPresenter(View view){
+        super(view);
     }
-    private View view;
-    private String message = null;
-    public RegisterPresenter(View view){this.view = view;}
+
     public void register(String firstName, String lastName, String alias, String password, String imageBytesBase64)
     {
         view.hideErrorMessage();
         view.showInfoMessage("Registering...");
         var registerService = new UserService();
-        registerService.register(firstName, lastName, alias, password, imageBytesBase64, new RegisterServiceObserver());
-
-
+        registerService.register(firstName, lastName, alias, password, imageBytesBase64, new AuthenticateObserver());
     }
     //can I have these throw? it works...
     public void validateRegistration(String firstName, String lastName, String alias, String password) {
@@ -50,14 +41,7 @@ public class RegisterPresenter {
     }
 
 
-    private class RegisterServiceObserver implements UserService.authenticateObserver, ServiceObserver {
-        @Override
-        public void authenticateSucceeded(AuthToken authToken, User registeredUser) {
-            view.hideErrorMessage();
-            view.hideInfoMessage();
-            view.showInfoMessage("Hello " + Cache.getInstance().getCurrUser().getName());
-            view.openMainView(registeredUser);
-        }
+    private class AuthenticateObserver extends AuthObserver {
         @Override
         public void handleFailure(String message) {
             view.showErrorMessage("Failed to register: " + message);
@@ -69,3 +53,4 @@ public class RegisterPresenter {
         }
     }
 }
+

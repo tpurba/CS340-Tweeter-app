@@ -6,7 +6,7 @@ import android.os.Message;
 import edu.byu.cs.tweeter.client.model.service.FollowService;
 import edu.byu.cs.tweeter.client.model.service.backgroundTask.CountTask;
 
-public class GetCountHandler extends BackgroundHandler<FollowService.CountServiceObserver> {
+public class GetCountHandler extends BackgroundHandler<FollowService.CountServiceObserver> { //handles both Follower and follow count
 
     public GetCountHandler(FollowService.CountServiceObserver observer) {
         super(Looper.getMainLooper(), observer);

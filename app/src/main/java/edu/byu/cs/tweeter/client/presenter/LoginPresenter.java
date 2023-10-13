@@ -3,30 +3,21 @@ package edu.byu.cs.tweeter.client.presenter;
 import edu.byu.cs.tweeter.client.cache.Cache;
 import edu.byu.cs.tweeter.client.model.service.ServiceObserver;
 import edu.byu.cs.tweeter.client.model.service.UserService;
-import edu.byu.cs.tweeter.model.domain.AuthToken;
 import edu.byu.cs.tweeter.model.domain.User;
 
-public class LoginPresenter{
+public class LoginPresenter extends AuthPresenter<AuthPresenter.View> {
 
 
-    public interface View{
-        void showInfoMessage(String message);
-        void hideInfoMessage();
-        void showErrorMessage(String message);
-        void hideErrorMessage();
-        void openMainView(User user);
-    }
-    private View view;
 
     public LoginPresenter(View view){
-        this.view = view;
+        super(view);
     }
     public void login(String alias, String password){
         if(validateLogin(alias, password)){
             view.hideErrorMessage();
             view.showInfoMessage("Loggin In...");
             var userService = new UserService();
-            userService.login(alias,password, new LoginServiceObserver());
+            userService.login(alias,password, new AuthenticateObserver());
         }
         else{
             //possibly throw error???
@@ -51,38 +42,9 @@ public class LoginPresenter{
         view.hideErrorMessage();
         view.showInfoMessage("getting user task started..."); //Delete this later probably I think I created
         var userService = new UserService();
-        userService.getUser(alias, Cache.getInstance().getCurrUserAuthToken(), new LoginGetUserObserver());
+        userService.getUser(alias, Cache.getInstance().getCurrUserAuthToken(), new getUserServiceObserver());
     }
-
-    private class LoginServiceObserver implements UserService.authenticateObserver, ServiceObserver{
-        @Override
-        public void authenticateSucceeded(AuthToken authToken, User user) {
-            view.hideErrorMessage();
-            view.hideInfoMessage();
-            view.showInfoMessage("Hello, " + user.getName());
-            view.openMainView(user);
-
-        }
-
-        @Override
-        public void handleFailure(String message) {
-            view.showErrorMessage("Failed to Login: " + message);
-        }
-
-        @Override
-        public void handleException(Exception exception) {
-            view.showErrorMessage("Failed to login because of exception: " + exception.getMessage());
-        }
-    }
-
-    private class LoginGetUserObserver implements UserService.GetUserObserver, ServiceObserver {
-        @Override
-        public void getUserSucceeded(User user) {
-            view.hideErrorMessage();
-            view.hideInfoMessage();
-            view.showInfoMessage("Getting user's profile...");
-            view.openMainView(user);
-        }
+    private class getUserServiceObserver implements UserService.GetUserObserver {
 
         @Override
         public void handleFailure(String message) {
@@ -93,8 +55,26 @@ public class LoginPresenter{
         public void handleException(Exception exception) {
             view.showErrorMessage("Failed to get user's profile because of exception: " + exception.getMessage());
         }
+
+        @Override
+        public void getUserSucceeded(User user) {
+            view.openMainView(user);
+        }
+    }
+    private class AuthenticateObserver extends AuthObserver {
+
+        @Override
+        public void handleFailure(String message) {
+            view.showErrorMessage("Failed to login:" + message);
+        }
+
+        @Override
+        public void handleException(Exception exception) {
+            view.showErrorMessage("Failed to login because of exception: " + exception.getMessage());
+        }
     }
 
 
 }
+
 

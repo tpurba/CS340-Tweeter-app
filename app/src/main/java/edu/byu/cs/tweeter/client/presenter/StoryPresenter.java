@@ -9,7 +9,7 @@ import edu.byu.cs.tweeter.model.domain.AuthToken;
 import edu.byu.cs.tweeter.model.domain.Status;
 import edu.byu.cs.tweeter.model.domain.User;
 
-public class StoryPresenter extends PagedPresenter<Status>{
+public class StoryPresenter extends PagedPresenter<Status, StoryPresenter.View>{
     private StatusService storyService;
     public StoryPresenter(View view){
         super(view);
@@ -22,7 +22,7 @@ public class StoryPresenter extends PagedPresenter<Status>{
 
     @Override
     public Status getLastItem() {
-        return null;
+        return lastItem;
     }
     @Override
     public boolean isLoading() {
@@ -32,17 +32,10 @@ public class StoryPresenter extends PagedPresenter<Status>{
 
     @Override
     public void doService(AuthToken currUserAuthToken, User user, int pageSize, Status lastItem) {
-        storyService.storyLoadMoreItems(Cache.getInstance().getCurrUserAuthToken(), user, PAGE_SIZE, this.lastItem, new StoryServiceObserver());
+        storyService.storyLoadMoreItems(Cache.getInstance().getCurrUserAuthToken(), user, PAGE_SIZE, this.lastItem, new StatusServiceObserver());
 
     }
-    public class StoryServiceObserver implements ServiceObserver {
-        public void addMoreStatus(List<Status> statuses, boolean hasMorePages) {
-            isLoading = false;
-            view.setLoadingFooter(false);
-            StoryPresenter.this.hasMorePages = hasMorePages;
-            lastItem = (statuses.size() > 0) ? statuses.get(statuses.size() - 1) : null;
-            view.addMoreStory(statuses);
-        }
+    public class StatusServiceObserver extends PagedObserver {
 
         @Override
         public void handleFailure(String message) {
@@ -57,29 +50,8 @@ public class StoryPresenter extends PagedPresenter<Status>{
             view.setLoadingFooter(false);
             view.displayMessage("Failed to get story because of exception: " + exception.getMessage());
         }
+
+
     }
-//    private class StoryServiceObserver implements StatusService.statusPageObserver, ServiceObserver {
-//        @Override
-//        public void addMoreStatus(List<Status> statuses, boolean hasMorePages) {
-//            isLoading = false;
-//            view.setLoadingFooter(false);
-//            StoryPresenter.this.hasMorePages = hasMorePages;
-//            lastItem = (statuses.size() > 0) ? statuses.get(statuses.size() - 1) : null;
-//            view.addMoreStory(statuses);
-//        }
-//
-//        @Override
-//        public void handleFailure(String message) {
-//            isLoading = false;
-//            view.setLoadingFooter(false);
-//            view.displayMessage("Failed to get story: " + message);
-//        }
-//
-//        @Override
-//        public void handleException(Exception exception) {
-//            isLoading = false;
-//            view.setLoadingFooter(false);
-//            view.displayMessage("Failed to get story because of exception: " + exception.getMessage());
-//        }
-//    }
+
 }

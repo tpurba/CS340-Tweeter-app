@@ -12,10 +12,11 @@ import edu.byu.cs.tweeter.client.model.service.FollowService;
 import edu.byu.cs.tweeter.client.model.service.ServiceObserver;
 import edu.byu.cs.tweeter.client.model.service.StatusService;
 import edu.byu.cs.tweeter.client.model.service.UserService;
+import edu.byu.cs.tweeter.client.view.main.MainActivity;
 import edu.byu.cs.tweeter.model.domain.Status;
 import edu.byu.cs.tweeter.model.domain.User;
 
-public class MainActivityPresenter  {
+public class MainActivityPresenter extends BasePresenter<MainActivityPresenter.View> {
 
 
     public interface View{
@@ -30,9 +31,9 @@ public class MainActivityPresenter  {
         void updateFollowButton(boolean removed);
         void setFollowButton(boolean button);
     }
-    private View view;
+
     public MainActivityPresenter(View view){
-        this.view = view;
+        super(view);
     }
     public void logOut(){
         view.showInfoMessage("Logging Out...");
@@ -175,11 +176,26 @@ public class MainActivityPresenter  {
             view.showInfoMessage("Failed to get followers count because of exception: " + exception.getMessage());
         }
     }
+    private class MainActivityFollowCountServiceObserver implements FollowService.CountServiceObserver, ServiceObserver { //merge the interfaces
+        @Override
+        public void getCountSuccess(int count) {
+            view.getFollowingCountSuccess(count);
+        }
+        @Override
+        public void handleFailure(String message) {
+            view.showInfoMessage("Failed to get following count: " + message);
+        }
+
+        @Override
+        public void handleException(Exception exception) {
+            view.showInfoMessage("Failed to get following count because of exception: " + exception.getMessage());
+        }
+    }
     private class MainActivityFollowServiceObserver implements FollowService.FollowButtonObserver {
-        public void buttonPressSuccess(boolean updateButton)
+        public void buttonPressSuccess()
         {
             view.updateSelectedUserFollowingAndFollowers();
-            view.updateFollowButton(updateButton);
+            view.updateFollowButton(false);
         }
 
         @Override
@@ -199,9 +215,9 @@ public class MainActivityPresenter  {
     }
     private class MainActivityUnFollowServiceObserver implements FollowService.FollowButtonObserver, ServiceObserver{
         @Override
-        public void buttonPressSuccess(boolean updateButton) {
+        public void buttonPressSuccess() {
             view.updateSelectedUserFollowingAndFollowers();
-            view.updateFollowButton(updateButton);
+            view.updateFollowButton(true);
         }
         @Override
         public void setFollowButton(boolean button) {
@@ -217,21 +233,7 @@ public class MainActivityPresenter  {
             view.showInfoMessage("Failed to unfollow because of exception: " + exception.getMessage());
         }
     }
-    private class MainActivityFollowCountServiceObserver implements FollowService.CountServiceObserver, ServiceObserver {
-        @Override
-        public void getCountSuccess(int count) {
-            view.getFollowingCountSuccess(count);
-        }
-        @Override
-        public void handleFailure(String message) {
-            view.showInfoMessage("Failed to get following count: " + message);
-        }
 
-        @Override
-        public void handleException(Exception exception) {
-            view.showInfoMessage("Failed to get following count because of exception: " + exception.getMessage());
-        }
-    }
 
     private class MainActivityStatusServiceObserver implements StatusService.PostObserver, ServiceObserver{
 
