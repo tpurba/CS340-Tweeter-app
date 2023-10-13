@@ -12,99 +12,73 @@ import edu.byu.cs.tweeter.client.model.service.backgroundTask.GetFollowingTask;
 import edu.byu.cs.tweeter.client.model.service.backgroundTask.IsFollowerTask;
 import edu.byu.cs.tweeter.client.model.service.backgroundTask.UnfollowTask;
 import edu.byu.cs.tweeter.client.model.service.handler.FollowHandler;
-import edu.byu.cs.tweeter.client.model.service.handler.GetFollowersCountHandler;
-import edu.byu.cs.tweeter.client.model.service.handler.GetFollowersFollowHandler;
-import edu.byu.cs.tweeter.client.model.service.handler.GetFollowingCountHandler;
-import edu.byu.cs.tweeter.client.model.service.handler.GetFollowingFollowHandler;
+import edu.byu.cs.tweeter.client.model.service.handler.GetCountHandler;
+import edu.byu.cs.tweeter.client.model.service.handler.GetFollowUsersHandler;
 import edu.byu.cs.tweeter.client.model.service.handler.IsFollowerHandler;
 import edu.byu.cs.tweeter.client.model.service.handler.UnfollowHandler;
 import edu.byu.cs.tweeter.model.domain.AuthToken;
 import edu.byu.cs.tweeter.model.domain.User;
 //fetch data
-public class FollowService{
-    public interface FollowObserver extends ServiceObserver{
-        void addMoreFollowees(List<User> followees, boolean hasMorePages);
+public class FollowService extends BaseService{
+    public interface userPageObserver extends ServiceObserver{//has both follower and followee page loaders
+        void addMoreUsers(List<User> followees, boolean hasMorePages);
         void handleFailure(String message);
         void handleException(Exception exception);
     }
-    public interface MainActivityObserver extends ServiceObserver {
+    public interface CountServiceObserver extends ServiceObserver { //has both followers and followee count
+        void getCountSuccess(int count);
+        void handleFailure(String message);
+        void handleException(Exception exception);
+    }
+    public interface FollowButtonObserver extends ServiceObserver { //has both follow button and unfollow button case
+        void buttonPressSuccess(boolean updateButton);
+        void setFollowButton(boolean button);
+        void handleFailure(String message);
+        void handleException(Exception exception);
+    }
 
-        void followSuccess(boolean updateButton);
-        void setFollowButton(boolean button);
-        void handleFailure(String message);
-        void handleException(Exception exception);
-    }
-    public interface MainActivityCountServiceObserver extends ServiceObserver {
-        void getFollowingCountSuccess(int count);
-        void handleFailure(String message);
-        void handleException(Exception exception);
-    }
-    public interface MainActivityUnfollowService extends ServiceObserver
-    {
-        void unFollowSuccess(boolean updateButton);
-        void setFollowButton(boolean button);
-        void handleFailure(String message);
-        void handleException(Exception exception);
-    }
-    public interface FollowerObserver extends ServiceObserver{
-        void addMoreFollowers(List<User> followers, boolean hasMorePages);
-        void handleFailure(String message);
-        void handleException(Exception exception);
-    }
     public interface MainActivityFollowerObserver extends ServiceObserver {
         void isFollower();
         void notFollower();
         void handleFailure(String message);
         void handleException(Exception exception);
     }
-    public interface MainActivityFollowerCountObserver extends ServiceObserver{
-        void getFollowerCountSuccess(int count);
-        void handleFailure(String message);
-        void handleException(Exception exception);
-    }
-    public void followLoadMoreItems(AuthToken currUserAuthToken, User user, int pageSize, User lastFollowee, FollowObserver observer) {
-        GetFollowingTask getFollowingTask = new GetFollowingTask(currUserAuthToken,
-                user, pageSize, lastFollowee, new GetFollowingFollowHandler(observer));
-        ExecutorService executor = Executors.newSingleThreadExecutor();
-        executor.execute(getFollowingTask);
-    }
-    public void followerLoadMoreItems(AuthToken currUserAuthToken, User user, int pageSize, User lastFollower, FollowerObserver observer){
-        GetFollowersTask getFollowersTask = new GetFollowersTask(currUserAuthToken,
-                user, pageSize, lastFollower, new GetFollowersFollowHandler(observer));
-        ExecutorService executor = Executors.newSingleThreadExecutor();
-        executor.execute(getFollowersTask);
-    }
-    public void getFollowingCount(AuthToken currUserAuthToken, User selectedUser, MainActivityCountServiceObserver observer){
-        GetFollowingCountTask followingCountTask = new GetFollowingCountTask(currUserAuthToken,
-                selectedUser, new GetFollowingCountHandler(observer));
-        ExecutorService executor = Executors.newSingleThreadExecutor();
-        executor.execute(followingCountTask);
-    }
-    public void follow(AuthToken currUserAuthToken, User selectedUser, MainActivityObserver observer){
-        FollowTask followTask = new FollowTask(currUserAuthToken,
-                selectedUser, new FollowHandler(observer));
-        ExecutorService executor = Executors.newSingleThreadExecutor();
-        executor.execute(followTask);
-    }
-    public void unFollow(AuthToken currUserAuthToken, User selectedUser, MainActivityUnfollowService observer){
-        UnfollowTask unfollowTask = new UnfollowTask(currUserAuthToken,
-                selectedUser, new UnfollowHandler(observer));
-        ExecutorService executor = Executors.newSingleThreadExecutor();
-        executor.execute(unfollowTask);
-    }
 
-    public void getFollowerCount(AuthToken currUserAuthToken, User selectedUser, MainActivityFollowerCountObserver observer)
+    public void followLoadMoreItems(AuthToken currUserAuthToken, User user, int pageSize, User lastFollowee, userPageObserver observer) {
+        GetFollowingTask getFollowingTask = new GetFollowingTask(currUserAuthToken,
+                user, pageSize, lastFollowee, new GetFollowUsersHandler(observer));
+        execute(getFollowingTask);;
+    }
+    public void followerLoadMoreItems(AuthToken currUserAuthToken, User user, int pageSize, User lastFollower, userPageObserver observer){
+        GetFollowersTask getFollowersTask = new GetFollowersTask(currUserAuthToken,
+                user, pageSize, lastFollower, new GetFollowUsersHandler(observer));
+        execute(getFollowersTask);
+    }
+    public void getFollowingCount(AuthToken currUserAuthToken, User selectedUser, CountServiceObserver observer){
+        GetFollowingCountTask followingCountTask = new GetFollowingCountTask(currUserAuthToken,
+                selectedUser, new GetCountHandler(observer));
+        execute(followingCountTask);
+    }
+    public void getFollowerCount(AuthToken currUserAuthToken, User selectedUser, CountServiceObserver observer)
     {
         GetFollowersCountTask followersCountTask = new GetFollowersCountTask(currUserAuthToken,
-                selectedUser, new GetFollowersCountHandler(observer));
-        ExecutorService executor = Executors.newSingleThreadExecutor();
-        executor.execute(followersCountTask);
+                selectedUser, new GetCountHandler(observer));
+        execute(followersCountTask);
+    }
+    public void follow(AuthToken currUserAuthToken, User selectedUser, FollowButtonObserver observer){
+        FollowTask followTask = new FollowTask(currUserAuthToken,
+                selectedUser, new FollowHandler(observer));
+        execute(followTask);
+    }
+    public void unFollow(AuthToken currUserAuthToken, User selectedUser, FollowButtonObserver observer){
+        UnfollowTask unfollowTask = new UnfollowTask(currUserAuthToken,
+                selectedUser, new UnfollowHandler(observer));
+        execute(unfollowTask);
     }
     public void isFollower(AuthToken currUserAuthToken, User currUser, User selectedUser, MainActivityFollowerObserver observer){
         IsFollowerTask isFollowerTask = new IsFollowerTask(currUserAuthToken,
                 currUser, selectedUser, new IsFollowerHandler(observer));
-        ExecutorService executor = Executors.newSingleThreadExecutor();
-        executor.execute(isFollowerTask);
+        execute(isFollowerTask);
     }
 
 }

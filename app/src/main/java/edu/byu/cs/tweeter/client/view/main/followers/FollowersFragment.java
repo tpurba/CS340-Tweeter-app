@@ -35,6 +35,7 @@ import edu.byu.cs.tweeter.client.presenter.FollowerPresenter;
 import edu.byu.cs.tweeter.client.presenter.FollowingPresenter;
 import edu.byu.cs.tweeter.client.presenter.LoginPresenter;
 import edu.byu.cs.tweeter.client.view.main.MainActivity;
+import edu.byu.cs.tweeter.model.domain.Status;
 import edu.byu.cs.tweeter.model.domain.User;
 
 /**
@@ -110,8 +111,23 @@ public class FollowersFragment extends Fragment implements LoginPresenter.View, 
     }
 
     @Override
+    public void addMoreFollowees(List<User> followees) {
+        //delete and fix
+    }
+
+    @Override
     public void addMoreFollowers(List<User> followers) {
         followersRecyclerViewAdapter.addItems(followers);
+    }
+
+    @Override
+    public void addMoreFeed(List<Status> statuses) {
+//delete and fix
+    }
+
+    @Override
+    public void addMoreStory(List<Status> statuses) {
+//delete and fix
     }
 
     @Override

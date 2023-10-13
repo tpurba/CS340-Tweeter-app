@@ -1,15 +1,8 @@
 package edu.byu.cs.tweeter.client.presenter;
 
-import android.widget.Toast;
-
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-
 import edu.byu.cs.tweeter.client.cache.Cache;
 import edu.byu.cs.tweeter.client.model.service.ServiceObserver;
 import edu.byu.cs.tweeter.client.model.service.UserService;
-import edu.byu.cs.tweeter.client.model.service.backgroundTask.LoginTask;
-import edu.byu.cs.tweeter.client.view.login.LoginFragment;
 import edu.byu.cs.tweeter.model.domain.AuthToken;
 import edu.byu.cs.tweeter.model.domain.User;
 
@@ -61,9 +54,9 @@ public class LoginPresenter{
         userService.getUser(alias, Cache.getInstance().getCurrUserAuthToken(), new LoginGetUserObserver());
     }
 
-    private class LoginServiceObserver implements UserService.LoginObserver, ServiceObserver{
+    private class LoginServiceObserver implements UserService.authenticateObserver, ServiceObserver{
         @Override
-        public void loginSucceeded(AuthToken authToken, User user) {
+        public void authenticateSucceeded(AuthToken authToken, User user) {
             view.hideErrorMessage();
             view.hideInfoMessage();
             view.showInfoMessage("Hello, " + user.getName());

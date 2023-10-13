@@ -8,40 +8,12 @@ import edu.byu.cs.tweeter.client.model.service.backgroundTask.PostStatusTask;
 
 // PostStatusHandler
 //GETRIDOF
-public class PostStatusHandler extends BackgroundHandler<StatusService.MainActivityObserver> {
-    public PostStatusHandler(StatusService.MainActivityObserver observer) {
+public class PostStatusHandler extends BackgroundHandler<StatusService.PostObserver> {
+    public PostStatusHandler(StatusService.PostObserver observer) {
         super(Looper.getMainLooper(), observer);
     }
-
-    @Override
-    protected String getSuccessKey() {
-        return PostStatusTask.SUCCESS_KEY;
-    }
-
-    @Override
-    protected String getMessageKey() {
-        return PostStatusTask.MESSAGE_KEY;
-    }
-
-    @Override
-    protected String getExceptionKey() {
-        return PostStatusTask.EXCEPTION_KEY;
-    }
-
     @Override
     protected void handleSuccess(Message msg) {
         observer.postSuccess("Successfully Posted!");
-    }
-
-    @Override
-    protected void createFailureMessage(Message msg) {
-        String message = msg.getData().getString(PostStatusTask.MESSAGE_KEY);
-        observer.handleFailure(message);
-    }
-
-    @Override
-    protected void createExceptionMessage(Message msg) {
-        Exception ex = (Exception) msg.getData().getSerializable(PostStatusTask.EXCEPTION_KEY);
-        observer.handleException(ex);
     }
 }

@@ -8,28 +8,14 @@ import edu.byu.cs.tweeter.client.model.service.FollowService;
 import edu.byu.cs.tweeter.client.model.service.backgroundTask.GetFollowingTask;
 import edu.byu.cs.tweeter.model.domain.User;
 
-public class GetFollowingFollowHandler extends PageHandler<User, FollowService.FollowObserver> {
+public class GetFollowingFollowHandler extends PageHandler<User, FollowService.userPageObserver> {
 
-    public GetFollowingFollowHandler(FollowService.FollowObserver observer) {
+    public GetFollowingFollowHandler(FollowService.userPageObserver observer) {
         super(Looper.getMainLooper(),observer);
     }
 
-    @Override
-    protected String getSuccessKey() {
-        return GetFollowingTask.SUCCESS_KEY;
-    }
-
-    @Override
-    protected String getMessageKey() {
-        return GetFollowingTask.MESSAGE_KEY;
-    }
-
-    @Override
-    protected String getExceptionKey() {
-        return GetFollowingTask.EXCEPTION_KEY;
-    }
-    protected void callObserver(List<User> list, boolean hasMorePages ){
-        observer.addMoreFollowees(list, hasMorePages);
+     protected void callObserver(List<User> list, boolean hasMorePages ){
+        observer.addMoreUsers(list, hasMorePages);
     }
 
 

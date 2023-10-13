@@ -50,9 +50,9 @@ public class RegisterPresenter {
     }
 
 
-    private class RegisterServiceObserver implements UserService.RegisterObserver, ServiceObserver {
+    private class RegisterServiceObserver implements UserService.authenticateObserver, ServiceObserver {
         @Override
-        public void registerSucceeded(AuthToken authToken, User registeredUser) {
+        public void authenticateSucceeded(AuthToken authToken, User registeredUser) {
             view.hideErrorMessage();
             view.hideInfoMessage();
             view.showInfoMessage("Hello " + Cache.getInstance().getCurrUser().getName());

@@ -143,7 +143,22 @@ public class StoryFragment extends Fragment implements LoginPresenter.View, Stor
 
     @Override
     public void displayMessage(String message) {
+//delete and fix
+    }
 
+    @Override
+    public void addMoreFollowees(List<User> followees) {
+        //delete and fix
+    }
+
+    @Override
+    public void addMoreFollowers(List<User> followers) {
+//delete and fix
+    }
+
+    @Override
+    public void addMoreFeed(List<Status> statuses) {
+//delete and fix
     }
 
     @Override

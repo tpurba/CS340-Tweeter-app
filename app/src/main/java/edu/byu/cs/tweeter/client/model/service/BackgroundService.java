@@ -1,20 +1,32 @@
 package edu.byu.cs.tweeter.client.model.service;
 
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-
-import edu.byu.cs.tweeter.client.model.service.backgroundTask.GetFeedTask;
-import edu.byu.cs.tweeter.client.model.service.handler.GetFeedHandler;
-import edu.byu.cs.tweeter.model.domain.AuthToken;
-import edu.byu.cs.tweeter.model.domain.Status;
-import edu.byu.cs.tweeter.model.domain.User;
 
 public abstract class BackgroundService <T, O>{
-//    public void loadMoreItems(AuthToken currUserAuthToken, User user, int pageSize, T lastItem, O observer, String TaskType){
-//        GetFeedTask getFeedTask = new GetFeedTask(currUserAuthToken,
-//                user, pageSize, lastItem, new GetFeedHandler(observer));// Create Task
+//    public void loadMoreItems(AuthToken currUserAuthToken, User user, int pageSize, T lastItem, O observer, String taskType){
+//        PageTask pageTask;
+//        if("follow".equals(taskType)){
+//            pageTask=  new GetFollowingTask(currUserAuthToken,
+//                    user, pageSize, lastItem, new GetFollowingFollowHandler(observer));;
+//
+//        }
+//        if("follower".equals(taskType)){
+//            pageTask = new GetFollowersTask(currUserAuthToken,
+//                    user, pageSize, lastItem, new GetFollowersFollowHandler(observer));
+//
+//        }
+//        if("feed".equals(taskType)){
+//            pageTask = new GetFeedTask(currUserAuthToken,
+//                    user, pageSize, lastItem, new GetFeedHandler(observer));// Create Task
+//        }
+//        if("story".equals(taskType)){
+//            pageTask = new GetStoryTask(currUserAuthToken,
+//                    user, pageSize, lastItem, new GetStoryHandler(observer));
+//        }
+//        else{
+//            throw new IllegalArgumentException("Invalid task type: " + taskType);
+//        }
 //        ExecutorService executor = Executors.newSingleThreadExecutor();
-//        executor.execute(getFeedTask);
+//        executor.execute(pageTask);
 //    }
 //    protected abstract
 }

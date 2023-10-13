@@ -12,37 +12,10 @@ public class GetUserHandler extends BackgroundHandler<UserService.GetUserObserve
     public GetUserHandler(UserService.GetUserObserver observer) {
         super(Looper.getMainLooper(), observer);
     }
-
-    @Override
-    protected String getSuccessKey() {
-        return GetUserTask.SUCCESS_KEY;
-    }
-
-    @Override
-    protected String getMessageKey() {
-        return GetUserTask.MESSAGE_KEY;
-    }
-
-    @Override
-    protected String getExceptionKey() {
-        return GetUserTask.EXCEPTION_KEY;
-    }
-
     @Override
     protected void handleSuccess(Message msg) {
         User user = (User) msg.getData().getSerializable(GetUserTask.USER_KEY);
         observer.getUserSucceeded(user);
     }
 
-    @Override
-    protected void createFailureMessage(Message msg) {
-        String message = msg.getData().getString(GetUserTask.MESSAGE_KEY);
-        observer.handleFailure(message);
-    }
-
-    @Override
-    protected void createExceptionMessage(Message msg) {
-        Exception ex = (Exception) msg.getData().getSerializable(GetUserTask.EXCEPTION_KEY);
-        observer.handleException(ex);
-    }
 }

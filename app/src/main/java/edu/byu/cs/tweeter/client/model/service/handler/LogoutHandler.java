@@ -11,36 +11,9 @@ public class LogoutHandler extends BackgroundHandler<UserService.MainActivityObs
     public LogoutHandler(UserService.MainActivityObserver observer) {
         super(Looper.getMainLooper(), observer);
     }
-
-    @Override
-    protected String getSuccessKey() {
-        return LogoutTask.SUCCESS_KEY;
-    }
-
-    @Override
-    protected String getMessageKey() {
-        return LogoutTask.MESSAGE_KEY;
-    }
-
-    @Override
-    protected String getExceptionKey() {
-        return LogoutTask.EXCEPTION_KEY;
-    }
-
     @Override
     protected void handleSuccess(Message msg) {
         observer.logOutSuccess();
     }
 
-    @Override
-    protected void createFailureMessage(Message msg) {
-        String message = msg.getData().getString(LogoutTask.MESSAGE_KEY);
-        observer.handleFailure(message);
-    }
-
-    @Override
-    protected void createExceptionMessage(Message msg) {
-        Exception ex = (Exception) msg.getData().getSerializable(LogoutTask.EXCEPTION_KEY);
-        observer.handleException(ex);
-    }
 }

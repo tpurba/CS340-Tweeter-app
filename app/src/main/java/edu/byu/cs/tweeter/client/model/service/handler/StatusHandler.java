@@ -23,15 +23,5 @@ public abstract class StatusHandler<T extends ServiceObserver> extends Backgroun
     }
 
     protected abstract void handleAddMoreStatus(List<Status> statuses, boolean hasMorePages );
-    @Override
-    protected void createFailureMessage(Message msg) {
-        String message = msg.getData().getString(BackgroundTask.MESSAGE_KEY);
-        observer.handleFailure(message);
-    }
 
-    @Override
-    protected void createExceptionMessage(Message msg) {
-        Exception ex = (Exception) msg.getData().getSerializable(BackgroundTask.EXCEPTION_KEY);
-        observer.handleException(ex);
-    }
 }

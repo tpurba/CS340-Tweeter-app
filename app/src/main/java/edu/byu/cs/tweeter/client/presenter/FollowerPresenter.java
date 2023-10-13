@@ -5,51 +5,41 @@ import java.util.List;
 import edu.byu.cs.tweeter.client.cache.Cache;
 import edu.byu.cs.tweeter.client.model.service.FollowService;
 import edu.byu.cs.tweeter.client.model.service.ServiceObserver;
+import edu.byu.cs.tweeter.model.domain.AuthToken;
 import edu.byu.cs.tweeter.model.domain.User;
 
-public class FollowerPresenter
+public class FollowerPresenter extends PagedPresenter<User>
 {
-    private static final int PAGE_SIZE = 10;
-    private boolean isLoading;
-    private User lastFollower;
-    private boolean hasMorePages;
-    public interface View{
-        void setLoadingFooter(boolean value);
-        void displayMessage(String message);
-        void addMoreFollowers(List<User> followers);
-    }
-    private View view;
     private FollowService followerService;
     public FollowerPresenter(View view){
-        this.view = view;
+        super(view);
         followerService = new FollowService();
     }
-
+    @Override
     public boolean hasMorePages() {
         return hasMorePages;
     }
-
+    @Override
+    public User getLastItem() {
+        return lastItem;
+    }
+    @Override
     public boolean isLoading() {
         return isLoading;
     }
-
-    public void loadMoreItems(User user)
-    {
-        if (!isLoading) {   // This guard is important for avoiding a race condition in the scrolling code.
-            isLoading = true;
-            view.setLoadingFooter(true);
-            followerService.followerLoadMoreItems(Cache.getInstance().getCurrUserAuthToken(), user, PAGE_SIZE, lastFollower, new FollowerPresenter.FollowerServiceObserver());
-
-        }
+    @Override
+    public void doService(AuthToken currUserAuthToken, User user, int pageSize, User lastItem) {
+        followerService.followerLoadMoreItems(Cache.getInstance().getCurrUserAuthToken(), user, PAGE_SIZE, this.lastItem, new FollowerPresenter.FollowerServiceObserver());
     }
-    private class FollowerServiceObserver implements FollowService.FollowerObserver, ServiceObserver {
+
+    private class FollowerServiceObserver implements FollowService.userPageObserver, ServiceObserver {
 
         @Override
-        public void addMoreFollowers(List<User> followers, boolean hasMorePages) {
+        public void addMoreUsers(List<User> followers, boolean hasMorePages) {
             isLoading = false;
             view.setLoadingFooter(false);
             FollowerPresenter.this.hasMorePages = hasMorePages;
-            lastFollower = (followers.size() > 0) ? followers.get(followers.size() - 1) : null;
+            lastItem = (followers.size() > 0) ? followers.get(followers.size() - 1) : null;
             view.addMoreFollowers(followers);
         }
 

@@ -1,7 +1,5 @@
 package edu.byu.cs.tweeter.client.model.service;
 
-import android.app.Service;
-
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -10,15 +8,14 @@ import edu.byu.cs.tweeter.client.model.service.backgroundTask.LoginTask;
 import edu.byu.cs.tweeter.client.model.service.backgroundTask.LogoutTask;
 import edu.byu.cs.tweeter.client.model.service.backgroundTask.RegisterTask;
 import edu.byu.cs.tweeter.client.model.service.handler.GetUserHandler;
-import edu.byu.cs.tweeter.client.model.service.handler.LoginHandler;
 import edu.byu.cs.tweeter.client.model.service.handler.LogoutHandler;
 import edu.byu.cs.tweeter.client.model.service.handler.RegisterHandler;
 import edu.byu.cs.tweeter.model.domain.AuthToken;
 import edu.byu.cs.tweeter.model.domain.User;
 
 public class UserService {
-    public interface LoginObserver extends ServiceObserver{
-        void loginSucceeded(AuthToken authToken, User user);
+    public interface authenticateObserver extends ServiceObserver{ //has both login and register
+        void authenticateSucceeded(AuthToken authToken, User user);
         void handleFailure(String message);
         void handleException(Exception exception);
 
@@ -33,15 +30,9 @@ public class UserService {
         void handleFailure(String message);
         void handleException(Exception exception);
     }
-    public interface RegisterObserver extends ServiceObserver {
-        void registerSucceeded(AuthToken authToken, User user);
-        void handleFailure(String message);
-        void handleException(Exception exception);
-    }
-
-    public void login(String alias, String password, LoginObserver observer){
+    public void login(String alias, String password, authenticateObserver observer){
         // Send the login request.
-        LoginTask loginTask = new LoginTask(alias, password, new LoginHandler(observer));
+        LoginTask loginTask = new LoginTask(alias, password, new RegisterHandler(observer));
         ExecutorService executor = Executors.newSingleThreadExecutor();
         executor.execute(loginTask);
     }
@@ -58,7 +49,7 @@ public class UserService {
         executor.execute(logoutTask);
     }
 
-    public void register(String firstName, String lastName, String alias, String password, String imageBytesBase64, RegisterObserver
+    public void register(String firstName, String lastName, String alias, String password, String imageBytesBase64, authenticateObserver
     observer){
         RegisterTask registerTask = new RegisterTask(firstName, lastName,
                 alias, password, imageBytesBase64, new RegisterHandler(observer));

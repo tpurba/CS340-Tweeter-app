@@ -160,9 +160,9 @@ public class MainActivityPresenter  {
             view.showInfoMessage("Failed to determine following relationship because of exception: " + exception.getMessage());
         }
     }
-    private class MainActivityFollowerCountServiceObserver implements FollowService.MainActivityFollowerCountObserver, ServiceObserver{
+    private class MainActivityFollowerCountServiceObserver implements FollowService.CountServiceObserver, ServiceObserver{
         @Override
-        public void getFollowerCountSuccess(int count) {
+        public void getCountSuccess(int count) {
             view.getFollowerCountSuccess(count);
         }
         @Override
@@ -175,8 +175,8 @@ public class MainActivityPresenter  {
             view.showInfoMessage("Failed to get followers count because of exception: " + exception.getMessage());
         }
     }
-    private class MainActivityFollowServiceObserver implements FollowService.MainActivityObserver{
-        public void followSuccess(boolean updateButton)
+    private class MainActivityFollowServiceObserver implements FollowService.FollowButtonObserver {
+        public void buttonPressSuccess(boolean updateButton)
         {
             view.updateSelectedUserFollowingAndFollowers();
             view.updateFollowButton(updateButton);
@@ -197,24 +197,9 @@ public class MainActivityPresenter  {
             view.showInfoMessage("Failed to follow because of exception: " + exception.getMessage());
         }
     }
-    private class MainActivityFollowCountServiceObserver implements FollowService.MainActivityCountServiceObserver, ServiceObserver {
+    private class MainActivityUnFollowServiceObserver implements FollowService.FollowButtonObserver, ServiceObserver{
         @Override
-        public void getFollowingCountSuccess(int count) {
-            view.getFollowingCountSuccess(count);
-        }
-        @Override
-        public void handleFailure(String message) {
-            view.showInfoMessage("Failed to get following count: " + message);
-        }
-
-        @Override
-        public void handleException(Exception exception) {
-            view.showInfoMessage("Failed to get following count because of exception: " + exception.getMessage());
-        }
-    }
-    private class MainActivityUnFollowServiceObserver implements FollowService.MainActivityUnfollowService, ServiceObserver{
-        @Override
-        public void unFollowSuccess(boolean updateButton) {
+        public void buttonPressSuccess(boolean updateButton) {
             view.updateSelectedUserFollowingAndFollowers();
             view.updateFollowButton(updateButton);
         }
@@ -232,7 +217,23 @@ public class MainActivityPresenter  {
             view.showInfoMessage("Failed to unfollow because of exception: " + exception.getMessage());
         }
     }
-    private class MainActivityStatusServiceObserver implements StatusService.MainActivityObserver, ServiceObserver{
+    private class MainActivityFollowCountServiceObserver implements FollowService.CountServiceObserver, ServiceObserver {
+        @Override
+        public void getCountSuccess(int count) {
+            view.getFollowingCountSuccess(count);
+        }
+        @Override
+        public void handleFailure(String message) {
+            view.showInfoMessage("Failed to get following count: " + message);
+        }
+
+        @Override
+        public void handleException(Exception exception) {
+            view.showInfoMessage("Failed to get following count because of exception: " + exception.getMessage());
+        }
+    }
+
+    private class MainActivityStatusServiceObserver implements StatusService.PostObserver, ServiceObserver{
 
         @Override
         public void postSuccess(String message) {

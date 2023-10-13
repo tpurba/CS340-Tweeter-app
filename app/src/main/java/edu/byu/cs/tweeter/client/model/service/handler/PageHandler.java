@@ -20,14 +20,5 @@ public abstract class PageHandler<O, T extends ServiceObserver>  extends Backgro
         callObserver(list, hasMorePages);
     }
     protected abstract void callObserver(List<O> list, boolean hasMorePages);
-    @Override
-    protected void createFailureMessage(Message msg) {
-        String message = msg.getData().getString(GetFollowingTask.MESSAGE_KEY);
-        observer.handleFailure(message);
-    }
-    @Override
-    protected void createExceptionMessage(Message msg) {
-        Exception ex = (Exception) msg.getData().getSerializable(GetFollowingTask.EXCEPTION_KEY);
-        observer.handleException(ex);
-    }
+
 }

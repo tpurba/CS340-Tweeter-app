@@ -145,8 +145,23 @@ public class FeedFragment extends Fragment implements LoginPresenter.View, FeedP
     }
 
     @Override
+    public void addMoreFollowees(List<User> followees) {
+        //fix
+    }
+
+    @Override
+    public void addMoreFollowers(List<User> followers) {
+        //delete and fix
+    }
+
+    @Override
     public void addMoreFeed(List<Status> statuses) {
         feedRecyclerViewAdapter.addItems(statuses);
+    }
+
+    @Override
+    public void addMoreStory(List<Status> statuses) {
+//delete and fix
     }
 
     /**

@@ -7,35 +7,21 @@ import edu.byu.cs.tweeter.client.cache.Cache;
 import edu.byu.cs.tweeter.client.model.service.UserService;
 import edu.byu.cs.tweeter.client.model.service.backgroundTask.AuthenticateTask;
 import edu.byu.cs.tweeter.client.model.service.backgroundTask.BackgroundTask;
-import edu.byu.cs.tweeter.client.model.service.backgroundTask.RegisterTask;
 import edu.byu.cs.tweeter.model.domain.AuthToken;
 import edu.byu.cs.tweeter.model.domain.User;
 
-public class RegisterHandler extends AuthenticateHandler<UserService.RegisterObserver> {
+public class RegisterHandler extends BackgroundHandler<UserService.authenticateObserver> {
 
-    public RegisterHandler(UserService.RegisterObserver observer) {
+    public RegisterHandler(UserService.authenticateObserver observer) {
         super(Looper.getMainLooper(), observer);
     }
-
     @Override
-    protected String getSuccessKey() {
-        return BackgroundTask.SUCCESS_KEY;
+    protected void handleSuccess(Message msg) {
+        User authenticatedUser = (User) msg.getData().getSerializable(AuthenticateTask.USER_KEY);
+        AuthToken authToken = (AuthToken) msg.getData().getSerializable(AuthenticateTask.AUTH_TOKEN_KEY);
+        //cache user session information
+        Cache.getInstance().setCurrUser(authenticatedUser);
+        Cache.getInstance().setCurrUserAuthToken(authToken);
+        observer.authenticateSucceeded(authToken, authenticatedUser);
     }
-
-    @Override
-    protected String getMessageKey() {
-        return BackgroundTask.MESSAGE_KEY;
-    }
-
-    @Override
-    protected String getExceptionKey() {
-        return BackgroundTask.EXCEPTION_KEY;
-    }
-
-    @Override
-    protected void authenticateObserver(User authenticatedUser, AuthToken authToken) {
-        observer.registerSucceeded(authToken, authenticatedUser);
-    }
-
-
 }

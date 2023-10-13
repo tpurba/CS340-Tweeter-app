@@ -12,21 +12,6 @@ public class IsFollowerHandler extends BackgroundHandler<FollowService.MainActiv
         super(Looper.getMainLooper(), observer);
     }
     @Override
-    protected String getSuccessKey() {
-        return IsFollowerTask.SUCCESS_KEY;
-    }
-
-    @Override
-    protected String getMessageKey() {
-        return IsFollowerTask.MESSAGE_KEY;
-    }
-
-    @Override
-    protected String getExceptionKey() {
-        return IsFollowerTask.EXCEPTION_KEY;
-    }
-
-    @Override
     protected void handleSuccess(Message msg) {
         boolean isFollower = msg.getData().getBoolean(IsFollowerTask.IS_FOLLOWER_KEY);
         if (isFollower) {
@@ -36,15 +21,5 @@ public class IsFollowerHandler extends BackgroundHandler<FollowService.MainActiv
         }
     }
 
-    @Override
-    protected void createFailureMessage(Message msg) {
-        String message = msg.getData().getString(IsFollowerTask.MESSAGE_KEY);
-        observer.handleFailure(message);
-    }
 
-    @Override
-    protected void createExceptionMessage(Message msg) {
-        Exception ex = (Exception) msg.getData().getSerializable(IsFollowerTask.EXCEPTION_KEY);
-        observer.handleException(ex);
-    }
 }
