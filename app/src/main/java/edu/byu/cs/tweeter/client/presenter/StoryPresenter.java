@@ -16,17 +16,8 @@ public class StoryPresenter extends PagedPresenter<Status, StoryPresenter.View>{
         storyService = new StatusService();
     }
     @Override
-    public boolean hasMorePages() {
-        return hasMorePages;
-    }
-
-    @Override
     public Status getLastItem() {
         return lastItem;
-    }
-    @Override
-    public boolean isLoading() {
-        return isLoading;
     }
 
 

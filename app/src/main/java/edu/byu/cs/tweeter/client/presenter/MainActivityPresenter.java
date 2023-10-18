@@ -12,7 +12,6 @@ import edu.byu.cs.tweeter.client.model.service.FollowService;
 import edu.byu.cs.tweeter.client.model.service.ServiceObserver;
 import edu.byu.cs.tweeter.client.model.service.StatusService;
 import edu.byu.cs.tweeter.client.model.service.UserService;
-import edu.byu.cs.tweeter.client.view.main.MainActivity;
 import edu.byu.cs.tweeter.model.domain.Status;
 import edu.byu.cs.tweeter.model.domain.User;
 
@@ -31,22 +30,30 @@ public class MainActivityPresenter extends BasePresenter<MainActivityPresenter.V
         void updateFollowButton(boolean removed);
         void setFollowButton(boolean button);
     }
+    private UserService userService;
+    private final FollowService followService;
+    private final StatusService statusService;
 
     public MainActivityPresenter(View view){
         super(view);
+        this.followService = new FollowService();//do same for these
+        this.statusService = new StatusService();
+    }
+    protected UserService getUserService(){
+        if(userService == null){
+            userService = new UserService();
+        }
+        return userService;
     }
     public void logOut(){
         view.showInfoMessage("Logging Out...");
-        var userService = new UserService();
-        userService.logOut(Cache.getInstance().getCurrUserAuthToken(), new MainActivityUserServiceObserver());
+        getUserService().logOut(Cache.getInstance().getCurrUserAuthToken(), new MainActivityLogoutObserver());
     }
     public void getFollowerCount(User selectedUser)
     {
-        var followerService = new FollowService();
-        followerService.getFollowerCount(Cache.getInstance().getCurrUserAuthToken(), selectedUser, new MainActivityFollowerCountServiceObserver());
+        followService.getFollowerCount(Cache.getInstance().getCurrUserAuthToken(), selectedUser, new MainActivityFollowerCountServiceObserver());
     }
     public void getFollowingCount(User selectedUser){
-        var followService = new FollowService();
         followService.getFollowingCount(Cache.getInstance().getCurrUserAuthToken(), selectedUser, new MainActivityFollowCountServiceObserver());
     }
     public void isFollower(User selectedUser){
@@ -55,16 +62,13 @@ public class MainActivityPresenter extends BasePresenter<MainActivityPresenter.V
     }
     public void follow(User selectedUser){
         view.showInfoMessage( "Adding " + selectedUser.getName() + "...");
-        var followService = new FollowService();
         followService.follow(Cache.getInstance().getCurrUserAuthToken(), selectedUser, new MainActivityFollowServiceObserver());
     }
     public void unFollow(User selectedUser){
         view.showInfoMessage("Removing " + selectedUser.getName() + "...");
-        var followService = new FollowService();
         followService.unFollow(Cache.getInstance().getCurrUserAuthToken(), selectedUser, new MainActivityUnFollowServiceObserver());
     }
     public void postStatus(Status newStatus){
-        var statusService = new StatusService();
         statusService.postStatus(Cache.getInstance().getCurrUserAuthToken(), newStatus, new MainActivityStatusServiceObserver());
     }
     public String getFormattedDateTime() throws ParseException {
@@ -127,7 +131,7 @@ public class MainActivityPresenter extends BasePresenter<MainActivityPresenter.V
             return word.length();
         }
     }
-    private class MainActivityUserServiceObserver implements UserService.MainActivityObserver, ServiceObserver{
+    private class MainActivityLogoutObserver implements UserService.LogoutObserver, ServiceObserver{
 
         @Override
         public void logOutSuccess() {
@@ -250,6 +254,7 @@ public class MainActivityPresenter extends BasePresenter<MainActivityPresenter.V
         @Override
         public void handleException(Exception exception) {
             view.showInfoMessage("Failed to post status because of exception: " + exception.getMessage());
+//            view.showInfoMessage("Failed to post" + string + "because of exception: " + exception.getMessage());
         }
     }
 }

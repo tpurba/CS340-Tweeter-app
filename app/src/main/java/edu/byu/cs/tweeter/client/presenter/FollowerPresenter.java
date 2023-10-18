@@ -17,16 +17,8 @@ public class FollowerPresenter extends PagedPresenter<User, FollowerPresenter.Vi
         followerService = new FollowService();
     }
     @Override
-    public boolean hasMorePages() {
-        return hasMorePages;
-    }
-    @Override
     public User getLastItem() {
         return lastItem;
-    }
-    @Override
-    public boolean isLoading() {
-        return isLoading;
     }
     @Override
     public void doService(AuthToken currUserAuthToken, User user, int pageSize, User lastItem) {

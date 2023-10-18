@@ -32,9 +32,15 @@ public abstract class  PagedPresenter<T, O extends PagedPresenter.View> extends 
         }
     }
     public abstract void doService(AuthToken currUserAuthToken, User user, int pageSize, T lastItem);
-    public abstract boolean isLoading();
-    public abstract boolean hasMorePages();
-    public abstract T getLastItem();
+    public boolean isLoading(){
+        return isLoading;
+    }
+    public boolean hasMorePages(){
+        return hasMorePages;
+    }
+    public T getLastItem(){
+        return lastItem;
+    }
 
     public abstract class PagedObserver implements ServiceObserver {
         public void addMoreItems(List<T> items, boolean hasMorePages) {

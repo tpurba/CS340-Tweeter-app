@@ -15,7 +15,7 @@ public class UserService extends BaseService{
     public interface GetUserObserver extends ServiceObserver {
         void getUserSucceeded(User user);
     }
-    public interface MainActivityObserver  extends ServiceObserver{
+    public interface LogoutObserver extends ServiceObserver{
         void logOutSuccess();
     }
     public void login(String alias, String password, AuthPresenter.AuthObserver observer){
@@ -29,7 +29,7 @@ public class UserService extends BaseService{
                 alias, new GetUserHandler(observer));
         execute(getUserTask);
     }
-    public void logOut(AuthToken currUserAuthToken, MainActivityObserver observer){
+    public void logOut(AuthToken currUserAuthToken, LogoutObserver observer){
         LogoutTask logoutTask = new LogoutTask(currUserAuthToken, new LogoutHandler(observer));
         execute(logoutTask);
     }

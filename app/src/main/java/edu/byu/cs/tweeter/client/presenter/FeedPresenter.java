@@ -17,17 +17,8 @@ public class FeedPresenter extends PagedPresenter<Status, FeedPresenter.View> {
     }
 
     @Override
-    public boolean hasMorePages() {
-        return hasMorePages;
-    }
-
-    @Override
     public Status getLastItem() {
         return lastItem;
-    }
-    @Override
-    public boolean isLoading() {
-        return isLoading;
     }
 
     @Override

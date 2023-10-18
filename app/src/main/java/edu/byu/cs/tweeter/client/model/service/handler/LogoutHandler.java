@@ -4,11 +4,10 @@ import android.os.Looper;
 import android.os.Message;
 
 import edu.byu.cs.tweeter.client.model.service.UserService;
-import edu.byu.cs.tweeter.client.model.service.backgroundTask.LogoutTask;
 
-public class LogoutHandler extends BackgroundHandler<UserService.MainActivityObserver> {
+public class LogoutHandler extends BackgroundHandler<UserService.LogoutObserver> {
 
-    public LogoutHandler(UserService.MainActivityObserver observer) {
+    public LogoutHandler(UserService.LogoutObserver observer) {
         super(Looper.getMainLooper(), observer);
     }
     @Override

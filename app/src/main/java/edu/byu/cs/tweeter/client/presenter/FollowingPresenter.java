@@ -13,18 +13,9 @@ public class FollowingPresenter extends PagedPresenter<User, FollowingPresenter.
         followService = new FollowService();
     }
     @Override
-    public boolean hasMorePages() {
-        return hasMorePages;
-    }
-    @Override
     public User getLastItem() {
         return lastItem;
     }
-    @Override
-    public boolean isLoading() {
-        return isLoading;
-    }
-
     @Override
     public void doService(AuthToken currUserAuthToken, User user, int pageSize, User lastItem) {
         followService.followLoadMoreItems(Cache.getInstance().getCurrUserAuthToken(), user, PAGE_SIZE, this.lastItem, new PageUserServiceObserver());
