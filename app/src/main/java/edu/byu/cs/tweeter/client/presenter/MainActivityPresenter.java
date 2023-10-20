@@ -31,19 +31,24 @@ public class MainActivityPresenter extends BasePresenter<MainActivityPresenter.V
         void setFollowButton(boolean button);
     }
     private UserService userService;
-    private final FollowService followService;
-    private final StatusService statusService;
+    private FollowService followService;
+    private StatusService statusService;
 
     public MainActivityPresenter(View view){
         super(view);
         this.followService = new FollowService();//do same for these
-        this.statusService = new StatusService();
     }
     protected UserService getUserService(){
         if(userService == null){
             userService = new UserService();
         }
         return userService;
+    }
+    protected StatusService getStatusService(){
+        if(statusService == null){
+            statusService = new StatusService();
+        }
+        return statusService;
     }
     public void logOut(){
         view.showInfoMessage("Logging Out...");
@@ -69,7 +74,8 @@ public class MainActivityPresenter extends BasePresenter<MainActivityPresenter.V
         followService.unFollow(Cache.getInstance().getCurrUserAuthToken(), selectedUser, new MainActivityUnFollowServiceObserver());
     }
     public void postStatus(Status newStatus){
-        statusService.postStatus(Cache.getInstance().getCurrUserAuthToken(), newStatus, new MainActivityStatusServiceObserver());
+        view.showInfoMessage("Posting Status...");
+        getStatusService().postStatus(Cache.getInstance().getCurrUserAuthToken(), newStatus, new PostStatusObserver());
     }
     public String getFormattedDateTime() throws ParseException {
         SimpleDateFormat userFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
@@ -135,16 +141,19 @@ public class MainActivityPresenter extends BasePresenter<MainActivityPresenter.V
 
         @Override
         public void logOutSuccess() {
+            Cache.getInstance().clearCache();//clear cache here
             view.hideInfoMessage();
             view.logoutUser();
         }
         @Override
         public void handleFailure(String message) {
+            view.hideInfoMessage();
             view.showInfoMessage("Failed to logout: " + message);
         }
 
         @Override
         public void handleException(Exception exception) {
+            view.hideInfoMessage();
             view.showInfoMessage("Failed to logout because of exception: " + exception.getMessage());
         }
     }
@@ -239,7 +248,7 @@ public class MainActivityPresenter extends BasePresenter<MainActivityPresenter.V
     }
 
 
-    private class MainActivityStatusServiceObserver implements StatusService.PostObserver, ServiceObserver{
+    private class PostStatusObserver implements StatusService.PostObserver, ServiceObserver{
 
         @Override
         public void postSuccess(String message) {
@@ -248,11 +257,13 @@ public class MainActivityPresenter extends BasePresenter<MainActivityPresenter.V
         }
         @Override
         public void handleFailure(String message) {
+            view.hideInfoMessage();
             view.showInfoMessage("Failed to post status: " + message);
         }
 
         @Override
         public void handleException(Exception exception) {
+            view.hideInfoMessage();
             view.showInfoMessage("Failed to post status because of exception: " + exception.getMessage());
 //            view.showInfoMessage("Failed to post" + string + "because of exception: " + exception.getMessage());
         }

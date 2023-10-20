@@ -1,12 +1,15 @@
 package edu.byu.cs.tweeter.client.presenter;
 import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 
 import edu.byu.cs.tweeter.client.cache.Cache;
 import edu.byu.cs.tweeter.client.model.service.UserService;
+import edu.byu.cs.tweeter.model.domain.AuthToken;
 
 public class MainPresenterUnitTest {
     private MainActivityPresenter.View mockView;
@@ -14,7 +17,7 @@ public class MainPresenterUnitTest {
     private Cache mockCache;
     private MainActivityPresenter mainPresenterSpy;
 
-    @Before
+    @BeforeEach
     public void setup(){
         //create mocks
         mockView = Mockito.mock(MainActivityPresenter.View.class);
@@ -37,13 +40,15 @@ public class MainPresenterUnitTest {
         Answer<Void> answer = new Answer<>() {
             @Override
             public Void answer(InvocationOnMock invocation) throws Throwable {
-                UserService.LogoutObserver observer = invocation.getArgument(0, UserService.LogoutObserver.class);
+                UserService.LogoutObserver observer = invocation.getArgument(1, UserService.LogoutObserver.class);
                 observer.logOutSuccess();
                 return null;
             }
         };
+        //calling setting an event when userService.logOut
         Mockito.doAnswer(answer).when(mockUserService).logOut(Mockito.any(),Mockito.any());
-        mainPresenterSpy.logOut();
+        mainPresenterSpy.logOut();//callling the method loOut in presenter
+        //checks
         Mockito.verify(mockView).showInfoMessage("Logging Out...");
         Mockito.verify(mockCache).clearCache();
         Mockito.verify(mockView).hideInfoMessage();
@@ -55,7 +60,7 @@ public class MainPresenterUnitTest {
         Answer<Void> answer = new Answer<>() {
             @Override
             public Void answer(InvocationOnMock invocation) throws Throwable {
-                UserService.LogoutObserver observer = invocation.getArgument(0, UserService.LogoutObserver.class);
+                UserService.LogoutObserver observer = invocation.getArgument(1, UserService.LogoutObserver.class);
                 observer.handleFailure("the error message");
                 return null;
             }
@@ -77,7 +82,7 @@ public class MainPresenterUnitTest {
         Answer<Void> answer = new Answer<>() {
             @Override
             public Void answer(InvocationOnMock invocation) throws Throwable {
-                UserService.LogoutObserver observer = invocation.getArgument(0, UserService.LogoutObserver.class);
+                UserService.LogoutObserver observer = invocation.getArgument(1, UserService.LogoutObserver.class);
                 observer.handleException(new Exception("the exception message"));
                 return null;
             }
