@@ -32,7 +32,8 @@ public class StoryPresenter extends PagedPresenter<Status, StoryPresenter.View>{
         public void handleFailure(String message) {
             isLoading = false;
             view.setLoadingFooter(false);
-            view.displayMessage("Failed to get story: " + message);
+            view.displayMessage("Failed to get story: " + message);//here we could move everything and instead of having view.displaymessage here have a functions makemessage(message)
+            //implment makemessage in here and move both handlefailure and handle exception up.
         }
 
         @Override

@@ -36,7 +36,7 @@ public class PostStatusTest {
         Mockito.when(mainPresenterSpy.getStatusService()).thenReturn(mockStatusService);
 
         Cache.setInstance(mockCache);
-        newStatus = new Status(post, mockCache.getCurrUser(),System.currentTimeMillis(), mainPresenterSpy.parseURLs(post), mainPresenterSpy.parseMentions(post));//set the newStatus to be empty
+        newStatus = new Status();
 
 
 
@@ -69,7 +69,7 @@ public class PostStatusTest {
                 return null;
             }
         };
-        Mockito.when(mockCache.getCurrUserAuthToken()).thenReturn(mockAuthToken);//when invocation is called to get the authtoken it mocks it and gets a authtoken
+        Mockito.when(mockCache.getCurrUserAuthToken()).thenReturn(mockAuthToken);
         Mockito.doAnswer(answer).when(mockStatusService).postStatus(Mockito.any(), Mockito.any(), Mockito.any());//AuthToken currAuthToken, Status newStatus, PostObserver observer
 
         mainPresenterSpy.postStatus(newStatus);

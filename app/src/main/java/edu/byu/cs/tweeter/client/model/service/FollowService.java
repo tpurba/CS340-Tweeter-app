@@ -33,7 +33,7 @@ public class FollowService extends BaseService{
     public void followLoadMoreItems(AuthToken currUserAuthToken, User user, int pageSize, User lastFollowee, FollowingPresenter.PageUserServiceObserver observer) {
         GetFollowingTask getFollowingTask = new GetFollowingTask(currUserAuthToken,
                 user, pageSize, lastFollowee, new GetPageHandler(observer));
-        execute(getFollowingTask);;
+        execute(getFollowingTask);
     }
     public void followerLoadMoreItems(AuthToken currUserAuthToken, User user, int pageSize, User lastFollower, FollowerPresenter.PageUserServiceObserver observer){
         GetFollowersTask getFollowersTask = new GetFollowersTask(currUserAuthToken,
